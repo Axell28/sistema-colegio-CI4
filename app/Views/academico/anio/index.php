@@ -18,12 +18,12 @@
          </nav>
       </div>
    </div>
-   <div class="row">
+   <div class="row mb-4">
       <div class="col-lg-12">
          <div class="card card-main">
             <div class="card-body">
                <div class="row mb-3">
-                  <div class="col">
+                  <div class="col-12">
                      <button class="btn btn-primary" id="btnNuevo">
                         <i class="fas fa-plus-circle"></i>
                         <span>&nbsp;Nuevo año academico</span>
@@ -35,17 +35,46 @@
          </div>
       </div>
    </div>
+   <div class="row">
+      <div class="col-lg-12">
+         <div class="card card-main">
+            <div class="card-body">
+               <div class="row mb-3">
+                  <div class="col-12">
+                     <button class="btn btn-success" id="btnNuevoPeriodo">
+                        <i class="far fa-calendar-check"></i>
+                        <span>&nbsp;Agregar Periodo</span>
+                     </button>
+                  </div>
+               </div>
+               <div id="jqxgridAnioPeriodo"></div>
+            </div>
+         </div>
+      </div>
+   </div>
 
    <?= $this->include('academico/anio/registro') ?>
 
 </div>
+
+<div class="modal fade" id="modalPeriodo" tabindex="-1" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered"></div>
+</div>
+
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <script src="<?= base_url('js/jqwidgets/jqxcheckbox.js') ?>"></script>
 <script>
+   const jqxgridAnioPeriodo = "#jqxgridAnioPeriodo";
    const frmRegistro = document.getElementById('frmRegistro');
 
    const modalRegistro = new bootstrap.Modal('#modalRegistro', {
+      keyboard: false,
+      backdrop: 'static'
+   });
+
+   const modalPeriodo = document.getElementById('modalPeriodo');
+   const modalPeriodoEvent = new bootstrap.Modal(modalPeriodo, {
       keyboard: false,
       backdrop: 'static'
    });
@@ -84,7 +113,53 @@
       localdata: `<?= json_encode(@$listaAnios) ?>`
    }
 
+   const jqxgridAnioPeriodoSource = {
+      datatype: 'json',
+      dataFields: [{
+            name: 'anio',
+            type: 'string'
+         },
+         {
+            name: 'periodo',
+            type: 'string'
+         },
+         {
+            name: 'tipo',
+            type: 'string'
+         },
+         {
+            name: 'fecini',
+            type: 'date',
+            format: 'yyyy-MM-dd'
+         },
+         {
+            name: 'fecfin',
+            type: 'date',
+            format: 'yyyy-MM-dd'
+         },
+         {
+            name: 'periododes',
+            type: 'string'
+         },
+         {
+            name: 'estado',
+            type: 'string'
+         },
+         {
+            name: 'estado',
+            type: 'string'
+         },
+         {
+            name: 'estadodes',
+            type: 'string'
+         }
+      ],
+      localdata: `[]`
+   }
+
    const jqxgridAnioEscolarAdapter = new $.jqx.dataAdapter(jqxgridAnioEscolarSource);
+
+   const jqxgridAnioPeriodoAdapter = new $.jqx.dataAdapter(jqxgridAnioPeriodoSource);
 
    function guardarRegistro(form) {
       const action = $('#txtaction').val() == 'I' ? 'insert' : 'update';
@@ -115,11 +190,39 @@
       });
    }
 
+   function openModalPeriodo(action = 'I', periodo = null) {
+      let rowIndex = $(jqxgridAnioEscolar).jqxGrid('getselectedrowindex');
+      $.ajax({
+         type: "POST",
+         url: "<?= MODULO_URL ?>/anio-academico/periodo",
+         data: {
+            action: action,
+            periodo: periodo,
+            anio: $(jqxgridAnioEscolar).jqxGrid('getcellvalue', rowIndex, 'anio')
+         },
+         beforeSend: function() {
+            $('#modalPeriodo .modal-dialog').html(getLoadingModal());
+            modalPeriodoEvent.show();
+         },
+         success: function(response) {
+            $('#modalPeriodo .modal-dialog').html(response);
+         },
+         error: function(jqXHR, status, error) {
+            let errorMsg = error;
+            if (jqXHR.responseJSON) {
+               errorMsg = jqXHR.responseJSON.message;
+            }
+            showAlertSweet(errorMsg, 'error');
+            modalPeriodoEvent.hide();
+         }
+      });
+   }
+
    $(document).ready(function() {
 
       $(jqxgridAnioEscolar).jqxGrid({
          width: '100%',
-         height: 340,
+         height: 300,
          source: jqxgridAnioEscolarAdapter,
          editable: true,
          columns: [{
@@ -127,7 +230,7 @@
                datafield: "anio",
                align: 'center',
                cellsalign: 'center',
-               width: "8%",
+               width: "10%",
                editable: false
             },
             {
@@ -176,24 +279,73 @@
                datafield: 'estado',
                editable: false,
                align: 'center',
-               width: "10%",
+               width: "13%",
                cellsrenderer: function(row, column, value) {
                   if (value == 'A') {
-                     return `<div class="jqx-center-align" style="padding-top: 11px"><span class="badge text-bg-success text-white">Abierto</span></div>`;
+                     return `<div class="jqx-center-align" style="padding-top: 12px"><span class="badge text-bg-success text-white">Abierto</span></div>`;
                   } else if (value == 'C') {
-                     return `<div class="jqx-center-align" style="padding-top: 11px"><span class="badge text-bg-danger">Cerrado</span></div>`;
+                     return `<div class="jqx-center-align" style="padding-top: 12px"><span class="badge text-bg-danger">Cerrado</span></div>`;
                   }
                }
+            }
+         ]
+      });
+
+      $(jqxgridAnioPeriodo).jqxGrid({
+         width: '100%',
+         height: 187,
+         source: jqxgridAnioPeriodoAdapter,
+         editable: false,
+         columns: [{
+               text: "Año",
+               datafield: "anio",
+               align: 'center',
+               cellsalign: 'center',
+               width: "15%"
+            },
+            {
+               text: "Periodo",
+               datafield: "periodo",
+               align: 'center',
+               cellsalign: 'center',
+               width: "10%"
+            },
+            {
+               text: "Tipo periodo",
+               datafield: "periododes",
+               align: 'center',
+               cellsalign: 'center',
+               width: "15%"
+            },
+            {
+               text: "Fecha Inicio",
+               datafield: "fecini",
+               align: 'center',
+               cellsalign: 'center',
+               width: "20%",
+               cellsformat: 'dd/MM/yyyy'
+            },
+            {
+               text: "Fecha Fin",
+               datafield: "fecfin",
+               align: 'center',
+               cellsalign: 'center',
+               width: "20%",
+               cellsformat: 'dd/MM/yyyy'
+            },
+            {
+               text: "Estado",
+               datafield: "estadodes",
+               align: 'center',
+               cellsalign: 'center',
+               width: "16%"
             },
             {
                text: '',
-               width: '5%',
+               width: '4%',
                cellsrenderer: function(row, column, value) {
-                  return `<div class="jqx-center-align">
-                     <button class="btn btn-link text-primary" title="Programar periodos">
-                        <i class="far fa-calendar-check fs-5"></i>
-                     </button>
-                  </div>`;
+                  let rowdata = $(jqxgridAnioPeriodo).jqxGrid('getrowdata', row);
+                  return `<div class="jqx-center-align"><button class="btn btn-link text-info" onclick="openModalPeriodo('E', '${rowdata.periodo}')" title="Editar"><i class="fas fa-pencil-alt"></i></button></div>`;
                }
             },
          ]
@@ -217,6 +369,22 @@
                if (data.listaAnios) {
                   jqxgridAnioEscolarSource.localdata = data.listaAnios;
                   $(jqxgridAnioEscolar).jqxGrid('updateBoundData');
+               }
+            }
+         });
+      });
+
+      $(jqxgridAnioEscolar).on('rowselect', function(e) {
+         $.ajax({
+            type: "POST",
+            url: "<?= MODULO_URL ?>/anio-academico/json/list-periodos",
+            data: {
+               anio: e.args.row.anio
+            },
+            success: function(response) {
+               if (response.listaAnioPeriodos) {
+                  jqxgridAnioPeriodoSource.localdata = response.listaAnioPeriodos;
+                  $(jqxgridAnioPeriodo).jqxGrid('updateBoundData');
                }
             }
          });
@@ -255,6 +423,12 @@
          frmRegistro.classList.remove('was-validated');
          modalRegistro.show();
       });
+
+      $('#btnNuevoPeriodo').click(function(e) {
+         openModalPeriodo('I');
+      });
+
+      $(jqxgridAnioEscolar).jqxGrid('selectrow', 0);
 
    });
 </script>

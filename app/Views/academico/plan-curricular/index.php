@@ -79,7 +79,7 @@
 </div>
 
 <div class="modal fade" id="modalCurricula" tabindex="-1" aria-hidden="true">
-   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"></div>
+   <div class="modal-dialog modal-dialog-centered"></div>
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>

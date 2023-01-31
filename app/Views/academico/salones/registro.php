@@ -246,6 +246,10 @@ $salon = esc($datosSalon);
          $('#cmbgrado').val(`<?= isset($salon['grado']) ? $salon['grado'] : '' ?>`);
          $('#cmbgrado').change();
          $('#cmbseccion').val(`<?= isset($salon['seccion']) ? $salon['seccion'] : '' ?>`);
+         $('#cmbtutor').val(`<?= isset($salon['tutor']) ? $salon['tutor'] : '' ?>`);
+         $('#cmbtutor').change();
+         $('#cmbcotutor').val(`<?= isset($salon['cotutor']) ? $salon['cotutor'] : '' ?>`);
+         $('#cmbcotutor').change();
       <?php } ?>
    })();
 </script>

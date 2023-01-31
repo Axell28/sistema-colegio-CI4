@@ -63,8 +63,13 @@ class SalonesController extends BaseController
          switch ($caso):
             case 'guardar':
                $action = $this->request->getPost('action');
-               $salon = $this->request->getPost('salon');
-               $anio = $this->request->getPost('anio');
+               $salon  = $this->request->getPost('salon');
+               $anio   = $this->request->getPost('anio');
+               $tutor  = $this->request->getPost('tutor');
+
+               if ($this->salonModel->existeTutorSalon($tutor)) {
+                  throw new \Exception("Ya existe un salón registrado con el mismo tutor, seleccione otro.");
+               }
 
                if ($action == 'I') {
                   $existeSalon = $this->salonModel->existeSalon(array(
@@ -74,7 +79,7 @@ class SalonesController extends BaseController
                      'seccion' => $this->request->getPost('seccion')
                   ));
                   if ($existeSalon) {
-                     throw new \Exception("Ya existe un salón registrado con el mismo nivel, grado y sección");
+                     throw new \Exception("Ya existe un salón registrado con el mismo nivel, grado y sección.");
                   }
                }
 

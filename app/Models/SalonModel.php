@@ -78,6 +78,13 @@ class SalonModel extends Model
       return $result->getRowArray();
    }
 
+   public function existeTutorSalon($tutor)
+   {
+      if (empty($tutor)) return false;
+      $query = $this->select()->where('tutor', $tutor)->first();
+      return empty($query) ? false : true;
+   }
+
    public function existeSalon(array $params)
    {
       $query = $this->select()->where(array('anio' => $params['anio'], 'nivel' => $params['nivel'], 'grado' => $params['grado'], 'seccion' => $params['seccion']))->first();

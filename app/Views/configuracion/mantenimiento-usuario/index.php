@@ -45,6 +45,9 @@
                   </div>
                </div>
                <div id="jqxgridUsuarios"></div>
+               <div class="pt-3">
+                  <p class="mb-0" id="totalReg">Total de Usuarios : &nbsp; 0</p>
+               </div>
             </div>
          </div>
       </div>
@@ -79,6 +82,55 @@
 
    const jqxgridUsuariosSource = {
       datatype: 'json',
+      dataFields: [{
+            name: 'usuario',
+            type: 'string'
+         },
+         {
+            name: 'perfil',
+            type: 'string'
+         },
+         {
+            name: 'nombre',
+            type: 'string'
+         },
+         {
+            name: 'codigo',
+            type: 'string'
+         },
+         {
+            name: 'entidad',
+            type: 'string'
+         },
+         {
+            name: 'estado',
+            type: 'string'
+         },
+         {
+            name: 'fecreg',
+            type: 'string'
+         },
+         {
+            name: 'fecmod',
+            type: 'string'
+         },
+         {
+            name: 'ultcon',
+            type: 'string'
+         },
+         {
+            name: 'perfil_nomb',
+            type: 'string'
+         },
+         {
+            name: 'estado_des',
+            type: 'string'
+         },
+         {
+            name: 'estado_bool',
+            type: 'bool'
+         }
+      ],
       localdata: `<?= json_encode(@$listaUsuarios) ?>`
    };
 
@@ -92,6 +144,11 @@
          };
       }
       return true;
+   }
+
+   function totalRegistros() {
+      const info = $(jqxgridUsuarios).jqxGrid('getdatainformation');
+      $('#totalReg').html(`Total de Usuarios : &nbsp; ` + (info.rowscount > 10 ? info.rowscount : ('0' + info.rowscount)));
    }
 
    $(document).ready(function() {
@@ -115,7 +172,8 @@
                text: "Nombre",
                datafield: "nombre",
                align: 'center',
-               width: "23%"
+               width: "23%",
+               editable: false,
             },
             {
                text: "Perfil",
@@ -168,9 +226,7 @@
                      usuario: rowdata.usuario,
                      estado: (args.value ? 'A' : 'I')
                   },
-                  success: function(response) {
-
-                  }
+                  success: function(response) {}
                });
             }
          }
@@ -188,6 +244,7 @@
                if (response.listaUsuarios) {
                   jqxgridUsuariosSource.localdata = response.listaUsuarios;
                   $(jqxgridUsuarios).jqxGrid('updateBoundData');
+                  totalRegistros();
                }
             }
          });
@@ -221,6 +278,8 @@
             }
          });
       });
+
+      totalRegistros();
 
    });
 </script>

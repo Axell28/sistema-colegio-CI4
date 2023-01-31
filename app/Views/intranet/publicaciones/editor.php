@@ -200,10 +200,10 @@
       formdata.append('cuerpo', tinyMCE.get('editor').getContent());
       formdata.append('destinatarios', null);
       formdata.append('action', ACTION);
-      formdata.append('adjunto', filesUp.length > 0 ? 'S' : 'N');
-      /* $.each(filesUp, function(index, value) {
-         formdata.append('archivos[]', value);
-      }); */
+      formdata.append('cargoArchivo', filesUp.length > 0 ? 'S' : 'N');
+      $.each(filesUp, function(index, value) {
+         formdata.append('adjuntos[]', value);
+      });
       $.ajax({
          type: "post",
          url: "<?= MODULO_URL ?>/publicaciones/json/guardar",

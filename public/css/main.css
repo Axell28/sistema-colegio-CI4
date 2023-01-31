@@ -4,16 +4,16 @@
    --color-menu: rgb(255, 255, 255, .85);
    --color-bg-body: rgb(247, 247, 255);
    --header-height: 60px;
-   --color-default-primary: #d89400;
-   --color-default-secondary: #07013b;
+   --color-default-primary: #130c2b;
+   --color-default-secondary: #e6da39;
 }
 
 body {
    overflow: hidden;
    color: var(--color-text);
    font-size: var(--font-size);
-   background: linear-gradient(60deg, rgb(247, 247, 255, .88), rgb(240, 240, 240, .88)), url("/img/default/bacground-app.jpg");
-   background-size: 25%;
+   background: linear-gradient( rgb(240, 240, 240, .88), rgb(240, 240, 240, .88)), url("/img/default/bacground-app.jpg");
+   background-size: 30%;
    /* background-color: var(--color-bg-body); */
 }
 
@@ -152,7 +152,7 @@ aside.menu {
 }
 
 .menu ul.sub li i {
-   line-height: 36px;
+   line-height: 34px;
    font-size: 1em;
 }
 

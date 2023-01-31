@@ -29,6 +29,14 @@ class MatriculaController extends BaseController
    {
       $viewData = new ViewData();
       $alumnoModel = new Models\AlumnoModel();
+      $viewData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
+      return view('academico/matricula/registro', $viewData->get());
+   }
+
+   public function registro2()
+   {
+      $viewData = new ViewData();
+      $alumnoModel = new Models\AlumnoModel();
       $viewData->isAjax(true);
       $viewData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
       return view('academico/matricula/matricula', $viewData->get());

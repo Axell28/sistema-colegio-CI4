@@ -15,7 +15,7 @@
       <div class="col-12">
          <div class="card card-main">
             <div class="card-body">
-               <h2 class="mb-0">En desarrollo :D</h2>
+               <div id="jqxgridCalificacion"></div>
             </div>
          </div>
       </div>
@@ -24,5 +24,51 @@
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <script>
+   const jqxgridCalificacion = "#jqxgridCalificacion";
+
+   const jqxgridCalificacionSource = {
+      datatype: 'json',
+      localdata: `<?= json_encode(@$listaAlumnos) ?>`
+   };
+
+   const jqxgridCalificacionAdapter = new $.jqx.dataAdapter(jqxgridCalificacionSource);
+
+   $(document).ready(function() {
+
+      $(jqxgridCalificacion).jqxGrid({
+         width: '100%',
+         height: 700,
+         source: jqxgridCalificacionAdapter,
+         editable: false,
+         columns: [{
+               text: "Nro",
+               align: 'center',
+               datafield: 'codalu',
+               width: "7%",
+               cellsalign: 'center',
+            },
+            {
+               text: "Alumno",
+               datafield: 'nomcomp',
+               align: 'center',
+               width: "27%",
+            }
+            <?php for ($i = 0; $i < 6; $i++) { ?>, {
+                  text: "Sem <?= ($i + 1) ?>",
+                  align: 'center',
+                  width: "5%",
+                  cellsalign: 'center',
+                  columngroup: 'data_bimestre'
+               },
+            <?php } ?>
+         ],
+         columnGroups: [{
+            text: 'I BIMESTRE',
+            name: 'data_bimestre',
+            align: 'center'
+         }]
+      });
+
+   });
 </script>
 <?= $this->endSection() ?>

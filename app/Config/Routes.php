@@ -70,12 +70,13 @@ $routes->group('academico', ['namespace' => 'App\Controllers\Academico', 'filter
 
     $routes->group('anio-academico', static function ($routes) {
         $routes->get('', 'AnioController::index');
+        $routes->post('periodo', 'AnioController::periodo');
         $routes->match(['get', 'post'], 'json/(:any)', 'AnioController::json/$1');
     });
 
     $routes->group('matricula', static function ($routes) {
         $routes->get('', 'MatriculaController::index');
-        $routes->post('registro', 'MatriculaController::registro');
+        $routes->get('registro', 'MatriculaController::registro');
         $routes->match(['get', 'post'], 'json/(:any)', 'MatriculaController::json/$1');
     });
 

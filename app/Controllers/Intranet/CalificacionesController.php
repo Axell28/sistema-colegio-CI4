@@ -12,6 +12,8 @@ class CalificacionesController extends BaseController
    public function index()
    {
       $viewData = new ViewData();
+      $alumnosModel = new Models\AlumnoModel();
+      $viewData->set('listaAlumnos', $alumnosModel->listarAlumnosCombo());
       return view('intranet/calificaciones/index', $viewData->get());
    }
 }

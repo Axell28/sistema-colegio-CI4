@@ -73,6 +73,19 @@ class AlumnoModel extends Model
       return $result->getResultArray();
    }
 
+   public function listarAlumnosCombo(array $params = array())
+   {
+      $query = $this->db->table('alumno a')
+         ->select(array(
+            'a.codalu',
+            new RawSql("CONCAT(p.apepat, ' ', p.apemat, ', ', p.nombres) AS nomcomp")
+         ))
+         ->join('persona p', 'p.codper = a.codper', 'INNER');
+      $query->orderBy('p.apepat, p.apemat');
+      $result = $query->get();
+      return $result->getResultArray();
+   }
+
    public function guardarDatosAlumno(array $params, $action = 'I')
    {
       $this->db->transBegin();

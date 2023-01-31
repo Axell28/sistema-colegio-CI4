@@ -216,7 +216,7 @@
                hidden: true
             },
             {
-               text: 'Salón',
+               text: 'SALÓN  ',
                dataField: 'ngs',
                hidden: true
             },
@@ -256,7 +256,7 @@
             },
             {
                text: '',
-               width: '4%',
+               width: '5%',
                cellsrenderer: function(row, column, value) {
                   return `
                   <div class="jqx-center-align">

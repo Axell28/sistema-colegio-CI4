@@ -21,6 +21,10 @@
       background-color: rgba(255, 255, 255, .8);
    }
 
+   .content-body-pub {
+      padding-bottom: 10px;
+   }
+
    .card-footer {
       background: transparent;
    }
@@ -136,17 +140,17 @@
    }
 
    @media only screen and (max-width: 1350px) {
-      #content-body-pub img {
+      .content-body-pub img {
          width: 100%;
          height: auto;
       }
 
-      #content-body-pub video {
+      .content-body-pub video {
          width: 100%;
          height: auto;
       }
 
-      #content-body-pub iframe {
+      .content-body-pub iframe {
          max-width: 100%;
       }
    }
@@ -191,10 +195,22 @@
                      </div>
                   </div>
                </div>
-               <div class="card-body" id="content-body-pub">
+               <div class="card-body content-body-pub">
                   <?= $pub['cuerpo'] ?>
                </div>
-               <div class="card-footer p-2 border-0">
+               <?php if (!empty($pub['adjuntos'])) { ?>
+                  <div class="px-3 py-2">
+                     <?php foreach ($pub['adjuntos'] as $adjunto) { ?>
+                        <div class="alert alert-dark mb-2" style="background-color: rgba(245, 245, 245); padding: 9px 14px;">
+                           <div class="d-flex align-items-center gap-2">
+                              <i class="fad fa-file-download fs-4"></i>
+                              <a href="<?= base_url($adjunto['ruta']) ?>" class="alert-link fw-normal" title="Descargar" download="<?= $adjunto['nombre'] ?>"><?= $adjunto['nombre'] ?></a>
+                           </div>
+                        </div>
+                     <?php } ?>
+                  </div>
+               <?php } ?>
+               <div class="card-footer p-2 border-0" style="padding-top: 0px;">
                   <div class="alert alert-<?= $color ?> d-flex align-items-center gap-3 mb-0 py-2">
                      <img src="<?= base_url() . $photoUser ?>" class="rounded-circle" width="39" height="39">
                      <div>

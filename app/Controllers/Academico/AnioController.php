@@ -17,12 +17,70 @@ class AnioController extends BaseController
       return view('academico/anio/index', $viewData->get());
    }
 
+   public function periodo()
+   {
+      $viewData = new ViewData();
+      $datosModel = new Models\DatosModel();
+      $anioPeriodoModel = new Models\AnioPeriodoModel();
+      $viewData->isAjax(true);
+      $anio = $this->request->getPost('anio');
+      $action = $this->request->getPost('action');
+      $periodo = $this->request->getPost('periodo');
+      $viewData->set('anio', $anio);
+      $viewData->set('action', $action);
+      if ($action == 'E') {
+         $viewData->set('dataPeriodo', $anioPeriodoModel->where(array('anio' => $anio, 'periodo' => $periodo))->first());
+      }
+      $viewData->set('listaPeriodosTipo', $datosModel->listarDatos('011'));
+      return view('academico/anio/periodo', $viewData->get());
+   }
+
    public function json($caso = null)
    {
       $jsonData = new JsonData();
       $anioModel = new Models\AnioModel();
+      $anioPeriodoModel = new Models\AnioPeriodoModel();
       try {
          switch ($caso):
+            case 'list-periodos':
+               $anio = $this->request->getPost('anio');
+               $jsonData->set('listaAnioPeriodos', $anioPeriodoModel->listarPeridosxAnio($anio));
+               break;
+            case 'save-periodo':
+               $action = $this->request->getPost('action');
+               $anio = $this->request->getPost('anio');
+               $tipo = $this->request->getPost('tipo');
+               $periodo = $this->request->getPost('periodo');
+               $fecini = $this->request->getPost('fecini');
+               $fecfin = $this->request->getPost('fecfin');
+
+               $existeRegistro = $anioPeriodoModel->existePeriodo(array(
+                  'anio' => $anio,
+                  'periodo' => $periodo
+               ));
+
+               if ($action == "I") {
+
+                  if ($existeRegistro) {
+                     throw new \Exception("Ya existe un periodo registrado.");
+                  }
+
+                  $anioPeriodoModel->insert(array(
+                     'anio' => $anio,
+                     'periodo' => intval($periodo),
+                     'tipo' => $tipo,
+                     'fecini' => $fecini,
+                     'fecfin' => $fecfin
+                  ));
+               } else {
+                  $anioPeriodoModel->set(array(
+                     'tipo' => $tipo,
+                     'fecini' => $fecini,
+                     'fecfin' => $fecfin
+                  ))->where(array('anio' => $anio, 'periodo' => intval($periodo)))->update();
+               }
+               $jsonData->set('listaAnioPeriodos', $anioPeriodoModel->listarPeridosxAnio($anio));
+               break;
             case 'insert':
                $anio = $this->request->getPost('anio');
                if (empty($anio)) {
@@ -63,7 +121,7 @@ class AnioController extends BaseController
       } catch (\Exception $ex) {
          $jsonData->set('code', $ex->getCode());
          $jsonData->set('message', $ex->getMessage());
-         return $this->response->setJSON($jsonData->get())->setStatusCode(400);
+         return $this->response->setJSON($jsonData->get())->setStatusCode(401);
       }
    }
 }

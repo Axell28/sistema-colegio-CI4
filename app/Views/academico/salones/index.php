@@ -71,7 +71,7 @@
 </div>
 
 <div class="modal fade" id="modalRegistro" tabindex="-1" aria-hidden="true">
-   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"></div>
+   <div class="modal-dialog modal-dialog-centered"></div>
 </div>
 
 <?= $this->endSection() ?>
@@ -203,7 +203,7 @@
 
       $(jqxgridSalones).jqxGrid({
          width: '100%',
-         height: 590,
+         height: 610,
          source: jqxgridSalonesAdapter,
          columns: [{
                text: "Código",

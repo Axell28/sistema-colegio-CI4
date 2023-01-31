@@ -5,6 +5,31 @@ namespace App\Helpers;
 class Funciones
 {
 
+   public static function eliminarDirectorio($pathDir)
+   {
+      if (!$dir = @opendir($pathDir)) return;
+      while (false !== ($item = readdir($dir))) {
+         if ($item != '.' && $item != '..') {
+            if (!@unlink($pathDir . DIRECTORY_SEPARATOR . $item)) {
+               self::eliminarDirectorio($pathDir . DIRECTORY_SEPARATOR . $item);
+            }
+         }
+      }
+      closedir($dir);
+      @rmdir($pathDir);
+   }
+
+   public static function obtenerTamanioArchivo($filePath = null, $fileBytes = 0)
+   {
+      $bytes = $fileBytes;
+      if (!empty($filePath)) {
+         $bytes = filesize($filePath);
+      }
+      $label = array('B', 'KB', 'MB', 'GB');
+      for ($i = 0; $bytes >= 1024 && $i < (count($label) - 1); $bytes /= 1024, $i++);
+      return (round($bytes, 2) . ' ' . $label[$i]);
+   }
+
    public static function minificarHtml(string $html)
    {
       $search = array(

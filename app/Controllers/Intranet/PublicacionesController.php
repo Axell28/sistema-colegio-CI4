@@ -5,20 +5,29 @@ namespace App\Controllers\Intranet;
 use App\Models;
 use App\Helpers\ViewData;
 use App\Helpers\JsonData;
-use App\Controllers\BaseController;
 use App\Helpers\Funciones;
+use App\Controllers\BaseController;
 
 class PublicacionesController extends BaseController
 {
+
+   public $publicacionModel;
+   public $pathPublicacion;
+
+   public function __construct()
+   {
+      $this->publicacionModel = new Models\PublicacionModel();
+      $this->pathPublicacion = UPLOAD_PATH . DIRECTORY_SEPARATOR . "publicacion";
+   }
+
    public function index()
    {
       $viewData = new ViewData();
       $datosModel = new Models\DatosModel();
       $perfilModel = new Models\PerfilModel();
-      $publicacionModel = new Models\PublicacionModel();
       $viewData->set('listaTiposPub', $datosModel->listarDatos('009'));
       $viewData->set('listaPerfiles', $perfilModel->listarPerfiles());
-      $viewData->set('listaPublicaciones', $publicacionModel->listarPublicaciones(array(
+      $viewData->set('listaPublicaciones', $this->publicacionModel->listarPublicaciones(array(
          'fecdesde' => date('Y-m-d'),
          'fechasta' => date('Y-m-d')
       )));
@@ -28,13 +37,12 @@ class PublicacionesController extends BaseController
    public function editor($codpub = null)
    {
       $viewData = new ViewData();
-      $perfilModel = new Models\PerfilModel();
       $datosModel = new Models\DatosModel();
-      $publicacionModel = new Models\PublicacionModel();
-      $datosPublicacion = $publicacionModel->getDatosDefault();
+      $perfilModel = new Models\PerfilModel();
+      $datosPublicacion = $this->publicacionModel->getDatosDefault();
       $action = 'I';
       if (!empty($codpub)) {
-         $datosPublicacion = $publicacionModel->find($codpub);
+         $datosPublicacion = $this->publicacionModel->find($codpub);
          $action = 'E';
       }
       $viewData->set('action', $action);
@@ -49,7 +57,7 @@ class PublicacionesController extends BaseController
    {
       $statusCode = 200;
       $viewJson = new JsonData();
-      $publicacionModel = new Models\PublicacionModel();
+      $publicacionFilesModel = new Models\PublicacionFilesModel();
       $tipoPub = $this->request->getPost('tipopub');
       $fecdesde = $this->request->getPost('fecdesde');
       $fechasta = $this->request->getPost('fechasta');
@@ -57,6 +65,8 @@ class PublicacionesController extends BaseController
          switch ($caso):
             case 'guardar':
                $action = $this->request->getPost('action');
+               $cargoArchivo = $this->request->getPost('cargoArchivo') == "S";
+               $adjuntos = $this->request->getFileMultiple("adjuntos");
                $values = array(
                   'codpub' => $this->request->getPost('codpub'),
                   'titulo' => $this->request->getPost('titulo'),
@@ -65,23 +75,41 @@ class PublicacionesController extends BaseController
                   'cuerpo' => Funciones::minificarHtml((string) $this->request->getPost('cuerpo')),
                   'destinatarios' => $this->request->getPost('destinatarios')
                );
-               $publicacionModel->guardarPublicacion($values, $action);
+               $codpub = $this->publicacionModel->guardarPublicacion($values, $action);
+               if ($cargoArchivo && !empty($adjuntos)) {
+                  $cont = 1;
+                  foreach ($adjuntos as $archivo) {
+                     if (!is_dir($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub)) {
+                        mkdir($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub);
+                     }
+                     $publicacionFilesModel->insert(array(
+                        'codpub'  => $codpub,
+                        'orden'   => $cont,
+                        'tamanio' => $archivo->getSizeByUnit(),
+                        'nombre'  => $archivo->getClientName(),
+                        'ruta'    => "/uploads/publicacion/{$codpub}/" . $archivo->getClientName()
+                     ));
+                     $archivo->move($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub, $archivo->getClientName());
+                     $cont++;
+                  }
+               }
                break;
             case 'eliminar':
                $codpub = $this->request->getGet('codpub');
                if (!is_numeric($codpub)) {
                   throw new \Exception('El código de la publicación es de formato incorrecto');
                }
-               $publicacionModel->delete($codpub);
+               $this->publicacionModel->delete($codpub);
+               Funciones::eliminarDirectorio($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub);
                break;
          endswitch;
-         $viewJson->set('listaPublicaciones', $publicacionModel->listarPublicaciones(array(
+         $viewJson->set('listaPublicaciones', $this->publicacionModel->listarPublicaciones(array(
             'tipo' => $tipoPub,
             'fecdesde' => $fecdesde,
             'fechasta' => $fechasta
          )));
       } catch (\Exception $ex) {
-         $statusCode = 400;
+         $statusCode = 401;
          $viewJson->set('message', $ex->getMessage());
       } finally {
          return $this->response->setJSON($viewJson->get())->setStatusCode($statusCode);

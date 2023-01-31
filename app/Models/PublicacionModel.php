@@ -60,6 +60,7 @@ class PublicacionModel extends Model
 
    public function listarPublicacionesIndex()
    {
+      $publicacionFilesModel = new PublicacionFilesModel();
       $query = $this->db->table('publicacion p')
          ->select(
             array(
@@ -84,7 +85,11 @@ class PublicacionModel extends Model
          ->join('empleado e', 'e.codemp = u.codigo', "LEFT")
          ->where(new RawSql("p.fecpubini <= NOW()"));
       $query->orderBy('p.fecpubini', 'DESC');
-      return $query->get()->getResultArray();
+      $result = $query->get()->getResultArray();
+      foreach ($result as &$value) {
+         $value['adjuntos'] = $publicacionFilesModel->obtenerAdjuntosPublicacion($value['codpub']);
+      }
+      return $result;
    }
 
    public function guardarPublicacion(array $params, $action)
@@ -102,11 +107,12 @@ class PublicacionModel extends Model
             'estado' => 'A'
          );
          if ($action == 'I') {
-            $this->insert($valuesPub);
+            $codpub = $this->insert($valuesPub, true);
          } else if ($action == 'E') {
             $this->set($valuesPub)->where('codpub', $codpub)->update();
          }
          $this->db->transCommit();
+         return $codpub;
       } catch (\Exception $ex) {
          $this->db->transRollback();
          throw new \Exception($ex->getMessage(), $ex->getCode());
