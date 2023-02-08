@@ -23,6 +23,12 @@ class AnioModel extends Model
       return isset($resp['anio']) ? $resp['anio'] : null;
    }
 
+   public function listarAniosMatricula()
+   {
+      $resp = $this->select('anio')->where('matricula', 'S')->findAll();
+      return $resp;
+   }
+
    public function getAnioMatricula()
    {
       $resp = $this->select('anio')->where('matricula', 'S')->first();

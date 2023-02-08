@@ -187,8 +187,24 @@
       return true;
    }
 
+   function obtenerDestinatarios() {
+      let datosIndex = $(jqxgridTreeDestino).jqxGrid('getselectedrowindexes');
+      if (datosIndex.length < 0) return false;
+      let list = [];
+      for (let i = 0; i < datosIndex.length; i++) {
+         let perfil = $(jqxgridTreeDestino).jqxGrid('getcellvalue', i, 'perfil');
+         list.push(perfil);
+      }
+      return list;
+   }
+
    function guardarPublicacion() {
       if (!validarDatos()) return;
+      let destinarios = obtenerDestinatarios();
+      if (destinarios == false) {
+         showAlertSweet('Debe seleccionar al menos un perfil para continuar.', 'warning');
+         return;
+      }
       const fecpubini = $('#txtfecpubini').val();
       const fecpubfin = $('#txtfecpubfin').val();
       const formdata = new FormData();
@@ -201,6 +217,7 @@
       formdata.append('destinatarios', null);
       formdata.append('action', ACTION);
       formdata.append('cargoArchivo', filesUp.length > 0 ? 'S' : 'N');
+      formdata.append('destinatarios', JSON.stringify(destinarios));
       $.each(filesUp, function(index, value) {
          formdata.append('adjuntos[]', value);
       });
@@ -251,7 +268,7 @@
             text: "Destinatarios",
             dataField: 'nombre',
             align: 'center',
-            width: "94.6%",
+            width: "90%",
             editable: false
          }]
       });

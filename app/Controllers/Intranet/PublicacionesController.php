@@ -57,6 +57,7 @@ class PublicacionesController extends BaseController
    {
       $statusCode = 200;
       $viewJson = new JsonData();
+      $publicacionDestModel = new Models\PublicacionDestModel();
       $publicacionFilesModel = new Models\PublicacionFilesModel();
       $tipoPub = $this->request->getPost('tipopub');
       $fecdesde = $this->request->getPost('fecdesde');
@@ -65,8 +66,16 @@ class PublicacionesController extends BaseController
          switch ($caso):
             case 'guardar':
                $action = $this->request->getPost('action');
+               $destinatarios = (string) $this->request->getPost('destinatarios');
                $cargoArchivo = $this->request->getPost('cargoArchivo') == "S";
                $adjuntos = $this->request->getFileMultiple("adjuntos");
+               $destinatarios = json_decode($destinatarios, true);
+
+               if (empty($destinatarios)) {
+                  throw new \Exception("Debe seleccionar los perfiles destinados de esta publicación.");
+               }
+
+               // guardar publicacion
                $values = array(
                   'codpub' => $this->request->getPost('codpub'),
                   'titulo' => $this->request->getPost('titulo'),
@@ -76,6 +85,11 @@ class PublicacionesController extends BaseController
                   'destinatarios' => $this->request->getPost('destinatarios')
                );
                $codpub = $this->publicacionModel->guardarPublicacion($values, $action);
+
+               // guardar destinatarios
+               $publicacionDestModel->guardarDestinatarios($codpub, $destinatarios);
+
+               // guardar archivos
                if ($cargoArchivo && !empty($adjuntos)) {
                   $cont = 1;
                   foreach ($adjuntos as $archivo) {

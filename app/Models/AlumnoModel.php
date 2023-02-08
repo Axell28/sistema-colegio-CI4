@@ -21,6 +21,23 @@ class AlumnoModel extends Model
    protected $createdField  = 'fecreg';
    protected $updatedField  = 'fecmod';
 
+   public function obtenerDatosAlumno($codalu)
+   {
+      $query = $this->db->table('alumno a')
+         ->select(array(
+            'a.codalu', 'a.codfam', 'a.anioing', 'a.fecing',
+            "COALESCE(a.matricula, 'N') AS matricula", 'a.estado',
+            "DATE_FORMAT(p.fecnac, '%d/%m/%Y') AS fecnac",
+            "p.numdoc", "p.sexo", "p.apepat", "p.apemat", "p.nombres", "p.direccion",
+            new RawSql("(CASE WHEN a.estado = 'A' THEN 'Activo' ELSE 'Inactivo' END) AS estado_des"),
+            new RawSql("CONCAT(p.apepat, ' ', p.apemat, ', ', p.nombres) AS nomcomp")
+         ))
+         ->join('persona p', 'p.codper = a.codper', 'INNER')
+         ->where('a.codalu', $codalu);
+      $result = $query->get();
+      return $result->getRowArray();
+   }
+
    public function listarAlumnos(array $params = array())
    {
       $query = $this->db->table('alumno a')
@@ -84,6 +101,37 @@ class AlumnoModel extends Model
       $query->orderBy('p.apepat, p.apemat');
       $result = $query->get();
       return $result->getResultArray();
+   }
+
+   public function listarFamResponsable($params = array(), $onlyrow = false)
+   {
+      $query = $this->db->table('alumno a')
+         ->select(array(
+            "a.codalu",
+            "f.codfam",
+            "fd.codper",
+            "p.numdoc",
+            "dd.descripcion AS parentdes",
+            "CONCAT(p.apepat, ' ', p.apemat, ', ', p.nombres) AS nomcomp"
+         ))
+         ->join('familia f', 'f.codfam = a.codfam', 'INNER')
+         ->join('familia_det fd', 'fd.codfam = f.codfam', 'INNER')
+         ->join('persona p', 'p.codper = fd.codper', 'LEFT')
+         ->join('datosdet dd', "dd.coddat = '008' and dd.coddet = fd.tipofam", 'LEFT')
+         ->where('fd.responsable', 'S');
+      if (isset($params['codalu'])) {
+         $query->where('a.codalu', $params['codalu']);
+      }
+      if ($onlyrow) {
+         $result = $query->get()->getRowArray();
+         return $result;
+      }
+      $result = $query->get()->getResultArray();
+      $newList = array();
+      foreach ($result as $value) :
+         $newList[$value['codalu']] = $value;
+      endforeach;
+      return $newList;
    }
 
    public function guardarDatosAlumno(array $params, $action = 'I')

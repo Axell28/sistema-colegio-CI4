@@ -41,7 +41,7 @@
          left: 0;
          width: 100%;
          height: 100vh;
-         background: linear-gradient(180deg, rgba(255, 202, 51, .7) 10%, rgba(12, 25, 82, .8));
+         background: linear-gradient(180deg, rgba(108, 216, 126, .5), rgba(6, 18, 71, .8));
       }
 
       .box-login {

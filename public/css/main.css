@@ -4,16 +4,16 @@
    --color-menu: rgb(255, 255, 255, .85);
    --color-bg-body: rgb(247, 247, 255);
    --header-height: 60px;
-   --color-default-primary: #130c2b;
-   --color-default-secondary: #e6da39;
+   --color-default-primary: #090f31;
+   --color-default-secondary: #489662;
 }
 
 body {
    overflow: hidden;
    color: var(--color-text);
    font-size: var(--font-size);
-   background: linear-gradient( rgb(240, 240, 240, .88), rgb(240, 240, 240, .88)), url("/img/default/bacground-app.jpg");
-   background-size: 30%;
+   background: linear-gradient(rgb(242, 242, 242, .88), rgb(242, 242, 242, .88)), url("/img/default/bacground-app.jpg");
+   background-size: 27%;
    /* background-color: var(--color-bg-body); */
 }
 
@@ -152,7 +152,7 @@ aside.menu {
 }
 
 .menu ul.sub li i {
-   line-height: 34px;
+   line-height: 32px;
    font-size: 1em;
 }
 
@@ -165,14 +165,14 @@ aside.menu {
    border-radius: 3px;
 }
 
-.menu ul li a:hover {
+.menu ul:not(.sub) li a:hover {
    color: #fff;
-   background-color: rgba(83, 83, 83, 0.5);
+   background-color: rgba(54, 69, 121, 0.5);
 }
 
-.menu ul li.active a {
+.menu ul:not(.sub) li.active a {
    color: #fff;
-   background-color: rgba(83, 83, 83, 0.5);
+   background-color: rgba(54, 69, 121, 0.5);
 }
 
 .menu li.active ul.sub a:hover {

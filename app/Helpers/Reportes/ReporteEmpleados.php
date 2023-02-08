@@ -23,6 +23,7 @@ class ReporteEmpleados
       $this->fpdf->SetMargins(7, 10, 7);
       $this->fpdf->SetAutoPageBreak(true, 10);
       $this->fpdf->SetFillColor(245, 245, 245);
+      $this->fpdf->SetDrawColor(100, 100, 100);
       $this->params = $params;
 
       $pivotEmpleados = $this->pivotListadoEmpleados();

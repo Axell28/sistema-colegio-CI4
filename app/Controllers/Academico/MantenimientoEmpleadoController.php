@@ -101,17 +101,23 @@ class MantenimientoEmpleadoController extends BaseController
                break;
             case 'eliminar':
                $codemp = $this->request->getGet('codemp');
+               $datoEmpleado = $this->empleadoModel->select('fotourl')->find($codemp);
+               if (!empty($datoEmpleado['fotourl'])) {
+                  $pathDirFile = MY_PUBLIC_PATH . DIRECTORY_SEPARATOR . $datoEmpleado['fotourl'];
+                  if (is_file($pathDirFile)) {
+                     unlink($pathDirFile);
+                  }
+               }
                $this->empleadoModel->eliminarEmpleado($codemp);
                break;
             case 'eliminar-foto':
                $codemp = $this->request->getPost('codemp');
                $datoEmpleado = $this->empleadoModel->select('fotourl')->find($codemp);
-               $jsonData->set('test', $datoEmpleado);
-               /* $pathDirFile = MY_PUBLIC_PATH . DIRECTORY_SEPARATOR . $datoEmpleado['fotourl'];
+               $pathDirFile = MY_PUBLIC_PATH . DIRECTORY_SEPARATOR . $datoEmpleado['fotourl'];
                if (is_file($pathDirFile)) {
                   unlink($pathDirFile);
                }
-               $this->empleadoModel->set('fotourl', null)->update($codemp); */
+               $this->empleadoModel->set('fotourl', null)->update($codemp);
                break;
          endswitch;
          $jsonData->set('listaEmpleados', $this->empleadoModel->listarEmpleados(array(

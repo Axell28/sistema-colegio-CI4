@@ -78,6 +78,27 @@ class SalonModel extends Model
       return $result->getRowArray();
    }
 
+   public function obtenerDatosSalonxNGS(array $params)
+   {
+      $query = $this->db->table('salon s')
+         ->select(array(
+            's.*',
+            new RawSql("CONCAT(p.apepat, ' ', p.apemat, ', ', p.nombres) as tutor_nomb"),
+            'd1.descripcion as modalidad_des',
+            'd2.descripcion as turno_des'
+         ))
+         ->join('datosdet d1', "d1.coddat = '001' and d1.coddet = s.modalidad", 'LEFT')
+         ->join('datosdet d2', "d2.coddat = '002' and d2.coddet = s.turno", 'LEFT')
+         ->join('empleado em', 'em.codemp = s.tutor', 'LEFT')
+         ->join('persona p', 'p.codper = em.codper', 'LEFT');
+      $query->where('s.anio', $params['anio']);
+      $query->where('s.nivel', $params['nivel']);
+      $query->where('s.grado', $params['grado']);
+      $query->where('s.seccion', $params['seccion']);
+      $result = $query->get();
+      return $result->getRowArray();
+   }
+
    public function existeTutorSalon($tutor)
    {
       if (empty($tutor)) return false;

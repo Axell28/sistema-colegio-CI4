@@ -100,6 +100,13 @@ class MantenimientoAlumnoController extends BaseController
                break;
             case 'eliminar':
                $codalu = $this->request->getGet('codalu');
+               $dataAlumno = $this->alumnoModel->select("fotourl")->find($codalu);
+               if (!empty($dataAlumno['fotourl'])) {
+                  $pathDirFile = MY_PUBLIC_PATH . DIRECTORY_SEPARATOR . $dataAlumno['fotourl'];
+                  if (is_file($pathDirFile)) {
+                     unlink($pathDirFile);
+                  }
+               }
                $this->alumnoModel->eliminarAlumno($codalu);
                break;
             case 'eliminar-foto':

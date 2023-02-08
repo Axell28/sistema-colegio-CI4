@@ -84,6 +84,12 @@ class PublicacionModel extends Model
          ->join('datosdet dd', 'dd.coddat = 009 and dd.coddet = p.tipo', 'LEFT')
          ->join('empleado e', 'e.codemp = u.codigo', "LEFT")
          ->where(new RawSql("p.fecpubini <= NOW()"));
+
+      if (!SUPER_ADMIN) {
+         $query->join('publicacion_dest pd', 'pd.codpub = p.codpub', 'INNER');
+         $query->where('pd.perfil', PERFIL);
+      }
+
       $query->orderBy('p.fecpubini', 'DESC');
       $result = $query->get()->getResultArray();
       foreach ($result as &$value) {

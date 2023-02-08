@@ -27,6 +27,9 @@ class ReporteController extends BaseController
          case '004':
             $reporte = new Reportes\ConstanciaMatricula();
             break;
+         case '005':
+            $reporte = new Reportes\FichaMatricula();
+            break;
       }
       $reporte->execute($params);
    }

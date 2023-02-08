@@ -19,7 +19,7 @@ class FamiliaModel extends Model
 
    // Dates
    protected $dateFormat    = 'datetime';
-   protected $createdField  = 'usureg';
+   protected $createdField  = 'fecreg';
    protected $updatedField  = 'fecmod';
    protected $useTimestamps = true;
 
@@ -74,28 +74,31 @@ class FamiliaModel extends Model
 
             $valuesFam['codfam'] = $codfam;
             $valuesFam['usureg'] = USUARIO;
+
             $this->insert($valuesFam);
-
-            $familiaDetModel->insert(array(
-               'codfam' => $codfam,
-               'codper' => $codper1,
-               'tipofam' => $params['parentesco1'],
-               'responsable' => $params['responsable1'],
-               'orden' => 1
-            ));
-
-            $familiaDetModel->insert(array(
-               'codfam' => $codfam,
-               'codper' => $codper2,
-               'tipofam' => $params['parentesco2'],
-               'responsable' => $params['responsable2'],
-               'orden' => 2
+            $this->db->transCommit();
+            $familiaDetModel->insertBatch(array(
+               array(
+                  'codfam' => $codfam,
+                  'codper' => $codper1,
+                  'tipofam' => $params['parentesco1'],
+                  'responsable' => $params['responsable1'],
+                  'orden' => 1
+               ),
+               array(
+                  'codfam' => $codfam,
+                  'codper' => $codper2,
+                  'tipofam' => $params['parentesco2'],
+                  'responsable' => $params['responsable2'],
+                  'orden' => 2
+               )
             ));
          } else if ($action == 'E') {
             $valuesFam['usumod'] = USUARIO;
             //$this->set($valuesFam)->update($codfam);
          }
          $this->db->transCommit();
+         /* $this->db->transRollback(); */
       } catch (\Exception $ex) {
          $this->db->transRollback();
          throw new \Exception($ex->getMessage());

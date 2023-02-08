@@ -544,7 +544,7 @@
       $('#cmbgrado').prop('disabled', true);
       $('#cmbnivel').prop('disabled', true);
       $('#cmbseccion').prop('disabled', true);
-      $('#btnDelete').prop('disabled', true);
+      $('#btnDelete').prop('disabled', false);
       $('#cmbestado').prop('disabled', true);
       $('#cmbanioing').prop('disabled', true);
    }
@@ -630,6 +630,7 @@
                   $(jqxgridAlumnos).jqxGrid('updateBoundData', 'data');
                   $(jqxgridAlumnos).jqxGrid('selectrow', 0);
                   showAlertSweet('Alumno eliminado correctamente', 'success');
+                  limpiarFormulario();
                }
             },
             error: function(jqXHR, status, error) {

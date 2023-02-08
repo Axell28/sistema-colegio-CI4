@@ -44,10 +44,10 @@
                      </select>
                   </div>
                   <div class="ms-auto" style="min-width: 15%;">
-                     <button class="btn btn-primary w-100" id="btnMatricula">
+                     <a href="<?= MODULO_URL ?>/matricula/registro" class="btn btn-primary w-100">
                         <i class="fas fa-user-graduate"></i>
                         <span>&nbsp;Matricular alumno</span>
-                     </button>
+                     </a>
                   </div>
                </div>
                <div id="jqxgridMatricula"></div>
@@ -83,7 +83,7 @@
    const jqxgridMatriculaSource = {
       datatype: 'json',
       dataFields: [{
-            name: 'salon',
+            name: 'codmat',
             type: 'string'
          },
          {
@@ -91,15 +91,59 @@
             type: 'string'
          },
          {
-            name: 'nivel',
+            name: 'salon',
             type: 'string'
          },
          {
-            name: 'grado',
+            name: 'codalu',
+            type: 'string'
+         },
+         {
+            name: 'fecmat',
+            type: 'string'
+         },
+         {
+            name: 'fecsal',
+            type: 'string'
+         },
+         {
+            name: 'condicion',
+            type: 'string'
+         },
+         {
+            name: 'modalidad',
+            type: 'string'
+         },
+         {
+            name: 'fecreg',
+            type: 'string'
+         },
+         {
+            name: 'salondes',
+            type: 'string'
+         },
+         {
+            name: 'alunomb',
+            type: 'string'
+         },
+         {
+            name: 'numdoc',
+            type: 'string'
+         },
+         {
+            name: 'ngs',
+            type: 'string'
+         },
+         {
+            name: 'usunomreg',
+            type: 'string'
+         },
+         {
+            name: 'condes',
             type: 'string'
          }
       ],
-      localdata: `[]`
+      localdata: `<?= json_encode(@$listaRegistroMatricula) ?>`
    };
 
    const jqxgridMatriculaAdapter = new $.jqx.dataAdapter(jqxgridMatriculaSource);
@@ -135,54 +179,58 @@
          width: '100%',
          height: 670,
          source: jqxgridMatriculaAdapter,
+         showfilterrow: true,
+         filterable: true,
          columns: [{
                text: "Código",
-               datafield: "salon",
+               datafield: "codmat",
                align: 'center',
                cellsalign: 'center',
-               width: "10%",
-            },
-            {
-               text: "Documento",
-               align: 'center',
-               cellsalign: 'center',
-               width: "10%",
+               width: "120",
             },
             {
                text: "Apellidos y Nombres",
+               datafield: "alunomb",
                align: 'center',
-               cellsalign: 'center',
-               width: "30%",
+               width: "340",
             },
             {
-               text: "Nivel",
+               text: "Fecha Matrícula",
+               datafield: "fecmat",
                align: 'center',
                cellsalign: 'center',
-               width: "10%",
+               width: "150",
+               filterable: false,
             },
             {
-               text: "Grado",
+               text: "NGS",
+               datafield: "ngs",
                align: 'center',
                cellsalign: 'center',
-               width: "10%",
+               width: "80",
+               filterable: false,
             },
             {
-               text: "Sección",
+               text: "Salón",
+               datafield: "salondes",
                align: 'center',
                cellsalign: 'center',
-               width: "10%",
+               width: "200",
+               filterable: false,
             },
             {
                text: "Condición",
+               datafield: "condes",
                align: 'center',
                cellsalign: 'center',
-               width: "10%",
+               width: "160",
+               filterable: false,
             },
             {
-               text: "Fecha matricula",
+               text: "Registrado por",
+               datafield: "usunomreg",
                align: 'center',
-               cellsalign: 'center',
-               width: "15%",
+               width: "250"
             },
          ]
       });

@@ -9,6 +9,14 @@ use App\Controllers\BaseController;
 
 class MatriculaController extends BaseController
 {
+
+   public $matriculaModel;
+
+   public function __construct()
+   {
+      $this->matriculaModel = new Models\MatriculaModel();
+   }
+
    public function index()
    {
       $viewData = new ViewData();
@@ -16,29 +24,74 @@ class MatriculaController extends BaseController
       $salonModel = new Models\SalonModel();
       $nivelModel = new Models\NivelModel();
       $gradoModel = new Models\GradoModel();
+      $anioMatricula = $anioModel->getAnioMatricula();
       $viewData->set('anioVigente', ANIO);
-      $viewData->set('anioMatricula', $anioModel->getAnioMatricula());
+      $viewData->set('anioMatricula', $anioMatricula);
       $viewData->set('listaAnios', $anioModel->listarAnios());
       $viewData->set('listaNiveles', $nivelModel->listarNiveles());
       $viewData->set('listaGrados', $gradoModel->listarGrados());
       $viewData->set('listaSalones', $salonModel->listarSalonesComboBox(array('anio' => ANIO)));
+      $viewData->set('listaRegistroMatricula', $this->matriculaModel->listarRegistroMatricula(array('anio' => $anioMatricula)));
       return view('academico/matricula/index', $viewData->get());
    }
 
    public function registro()
    {
       $viewData = new ViewData();
+      $datosModel = new Models\DatosModel();
+      $anioModel = new Models\AnioModel();
+      $nivelModel = new Models\NivelModel();
+      $gradoModel = new Models\GradoModel();
+      $seccionModel = new Models\SeccionModel();
       $alumnoModel = new Models\AlumnoModel();
+      $viewData->set('listaSitMat', $datosModel->listarDatos('012'));
+      $viewData->set('listaNiveles', $nivelModel->listarNiveles());
+      $viewData->set('listaGrados', $gradoModel->listarGrados());
+      $viewData->set('listaSecciones', $seccionModel->listarSecciones());
+      $viewData->set('listaAnioMatricula', $anioModel->listarAniosMatricula());
+      $viewData->set('listaFamiliarResponsable', $alumnoModel->listarFamResponsable());
       $viewData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
       return view('academico/matricula/registro', $viewData->get());
    }
 
-   public function registro2()
+   public function json($case)
    {
-      $viewData = new ViewData();
+      $jsonData = new JsonData();
+      $salonModel = new Models\SalonModel();
       $alumnoModel = new Models\AlumnoModel();
-      $viewData->isAjax(true);
-      $viewData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
-      return view('academico/matricula/matricula', $viewData->get());
+      try {
+         switch ($case):
+            case 'save-matricula':
+               $nivel   = $this->request->getPost('nivel');
+               $grado   = $this->request->getPost('grado');
+               $seccion = $this->request->getPost('seccion');
+               $salonDest = $salonModel->obtenerDatosSalonxNGS(array(
+                  'anio'    => $this->request->getPost('anio'),
+                  'nivel'   => $nivel,
+                  'grado'   => $grado,
+                  'seccion' => $seccion
+               ));
+
+               if (empty($salonDest) || is_null($salonDest)) {
+                  throw new \Exception("Error! Debe registrar un salón con el NIVEL, GRADO Y SECCIÓN correspondiente.");
+               }
+
+               $values  = array(
+                  'anio'   => $this->request->getPost('anio'),
+                  'codalu' => $this->request->getPost('alumno'),
+                  'fecmat' => $this->request->getPost('fecmat'),
+                  'salon'  => $salonDest['salon'],
+                  'observacion' => $this->request->getPost('observacion')
+               );
+               $codMatricula = $this->matriculaModel->registrarMatricula($values);
+               $jsonData->set('message', 'OK');
+               $jsonData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
+               break;
+         endswitch;
+         return $this->response->setJSON($jsonData->get())->setStatusCode(200);
+      } catch (\Exception $ex) {
+         $jsonData->set('message', $ex->getMessage());
+         return $this->response->setJSON($jsonData->get())->setStatusCode(401);
+      }
    }
 }
