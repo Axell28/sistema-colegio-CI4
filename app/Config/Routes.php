@@ -128,6 +128,10 @@ $routes->group('intranet', ['namespace' => 'App\Controllers\Intranet', 'filter' 
 
     $routes->group('cursos', static function ($routes) {
         $routes->get('', 'CursosController::index');
+        $routes->post('auv-grupo', 'CursosController::auvgrupo');
+        $routes->post('auv-grupo-items', 'CursosController::auvGrupoItems');
+        $routes->post('auv-grupo-editor', 'CursosController::auvEditor');
+        $routes->get('classroom/(:alphanum)/(:alphanum)', 'CursosController::classroom/$1/$2');
         $routes->match(['get', 'post'], 'json/(:any)', 'CursosController::json/$1');
     });
 });

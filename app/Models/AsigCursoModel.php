@@ -36,6 +36,29 @@ class AsigCursoModel extends Model
       }
    }
 
+   public function obtenerDatosAsignacionCurso(array $params)
+   {
+      $query = $this->db->table('asignacion_curso ac')
+         ->select(array(
+            "ac.salon",
+            "c.codcur",
+            "c.nombre AS curnom",
+            "ac.codemp AS docentecod",
+            "CONCAT(UPPER(p.nombres), ' ', p.apepat, ' ', p.apemat) AS docentenom"
+         ))
+         ->join("salon s", "s.salon = ac.salon", "INNER")
+         ->join("curso c", "c.codcur = ac.codcur", "INNER")
+         ->join("empleado e", "e.codemp = ac.codemp", "INNER")
+         ->join("persona p", "p.codper = e.codper", "LEFT")
+         ->where(array(
+            's.anio' => $params['anio'],
+            's.salon' => $params['salon'],
+            'ac.codcur' => $params['curso']
+         ));
+      $result = $query->get();
+      return $result->getRowArray();
+   }
+
    public function listarGrupodeCursosAsignados(array $params)
    {
       $query = $this->db->table('curriculo cu')

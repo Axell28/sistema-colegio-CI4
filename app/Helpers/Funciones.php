@@ -5,6 +5,25 @@ namespace App\Helpers;
 class Funciones
 {
 
+   public static function numeroTipoPeriodo($periodo, $upper = false)
+   {
+      $valor = "";
+      switch ($periodo) {
+         case '1':
+            $valor = "1er";
+            break;
+         case '2':
+            $valor = "2do";
+            break;
+         case '3':
+            $valor = "3er";
+            break;
+         case '4':
+            $valor = "4to";
+      }
+      return $upper ? strtoupper($valor) : $valor;
+   }
+
    public static function eliminarDirectorio($pathDir)
    {
       if (!$dir = @opendir($pathDir)) return;
@@ -89,6 +108,28 @@ class Funciones
          $coord = $dist;
       }
       return $coord;
+   }
+
+   public static function generarBgRandom()
+   {
+      $colores = array(
+         'F9F54B',
+         '8BF5FA',
+         'FCE22A',
+         'F94A29',
+         'AAE3E2',
+         'FFD4B2',
+         'FFF6BD',
+         'CEEDC7',
+         '86C8BC',
+         'E8F3D6',
+         'FFDCA9',
+         'FCF9BE',
+         'C4DFAA',
+         'F5F0BB'
+      );
+      $max = count($colores) - 1;
+      return "#" . $colores[rand(0, $max)];
    }
 
    private static function verificarMenuActivo(array $pivotMenu, $activeMenu)

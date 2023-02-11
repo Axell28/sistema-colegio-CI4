@@ -133,6 +133,7 @@
    const ACTION = '<?= @$action ?>';
    const jqxgridTreeDestino = '#jqxgridTreeDestino';
    const listaAdjuntos = [];
+   const listaDestinatarios = JSON.parse('<?= json_encode(@$listarDestinatarios) ?>');
 
    const jqxgridTreeDestinoSource = {
       datatype: 'json',
@@ -159,7 +160,7 @@
       plugins: 'link media table image emoticons advlist lists code table template example paste table',
       toolbar: 'formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | numlist bullist checklist | forecolor backcolor | link media image pageembed emoticons | table | removeformat',
       menubar: false,
-      content_style: '@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap"); body { font-family: "Lexend Deca", sans-serif; font-size: 13px; line-height: 1.6; }',
+      content_style: '@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap"); body { font-family: "Lexend Deca", sans-serif; font-size: 14px; line-height: 1.6; }',
       height: '630',
       object_resizing: true,
       fix_list_elements: true,
@@ -187,7 +188,7 @@
       return true;
    }
 
-   function obtenerDestinatarios() {
+   function getDestinatarios() {
       let datosIndex = $(jqxgridTreeDestino).jqxGrid('getselectedrowindexes');
       if (datosIndex.length < 0) return false;
       let list = [];
@@ -198,9 +199,19 @@
       return list;
    }
 
+   function setDestinatarios() {
+      const grillaDest = $(jqxgridTreeDestino).jqxGrid('getrows');
+      $.each(grillaDest, function(index, value) {
+         let destinatario = listaDestinatarios.find(item => item.perfil == value.perfil);
+         if(destinatario) {
+            $(jqxgridTreeDestino).jqxGrid('selectrow', index);
+         }
+      });
+   }
+
    function guardarPublicacion() {
       if (!validarDatos()) return;
-      let destinarios = obtenerDestinatarios();
+      let destinarios = getDestinatarios();
       if (destinarios == false) {
          showAlertSweet('Debe seleccionar al menos un perfil para continuar.', 'warning');
          return;
@@ -293,6 +304,9 @@
       $('#btnGuardar').on('click', function() {
          guardarPublicacion();
       });
+
+      setDestinatarios();
+
    });
 </script>
 <?= $this->endSection() ?>

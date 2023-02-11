@@ -24,4 +24,15 @@ class PublicacionDestModel extends Model
                $this->insert(array('codpub' => $codpub, 'perfil' => $value));
           }
      }
+
+     public function listarDestinatarios($codpub)
+     {
+          if (is_null($codpub)) return array();
+          $query = $this->db->table('publicacion_dest pd')
+               ->select('pd.*, p.nombre')
+               ->join('perfil p', 'p.perfil = pd.perfil', 'INNER')
+               ->where('pd.codpub', $codpub);
+          $result = $query->get();
+          return $result->getResultArray();
+     }
 }

@@ -89,9 +89,9 @@ class SalonesController extends BaseController
                   'nivel' => $this->request->getPost('nivel'),
                   'grado' => $this->request->getPost('grado'),
                   'seccion' => $this->request->getPost('seccion'),
-                  'tutor' => $this->request->getPost('tutor'),
-                  'cotutor' => $this->request->getPost('cotutor'),
-                  'coordinador' => $this->request->getPost('coordinador'),
+                  'tutor' => !empty($this->request->getPost('tutor')) ? $this->request->getPost('tutor') : null,
+                  'cotutor' => !empty($this->request->getPost('cotutor')) ? $this->request->getPost('cotutor') : null,
+                  'coordinador' => !empty($this->request->getPost('coordinador')) ? $this->request->getPost('coordinador') : null,
                   'vacantes' => $this->request->getPost('vacantes'),
                   'modalidad' => $this->request->getPost('modalidad'),
                   'turno' => $this->request->getPost('turno')

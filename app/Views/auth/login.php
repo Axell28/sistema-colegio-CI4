@@ -41,7 +41,7 @@
          left: 0;
          width: 100%;
          height: 100vh;
-         background: linear-gradient(180deg, rgba(108, 216, 126, .5), rgba(6, 18, 71, .8));
+         background: linear-gradient(180deg, rgba(52, 177, 166, 0.5), rgba(6, 18, 71, .8));
       }
 
       .box-login {
@@ -125,13 +125,13 @@
 
    <div class="carousel slide carousel-fade" data-bs-ride="carousel">
       <div class="carousel-inner">
-         <div class="carousel-item active" data-bs-interval="7000">
+         <div class="carousel-item active" data-bs-interval="5000">
             <img src="<?= base_url('/img/default/background_01.jpg') ?>" class="d-block w-100">
          </div>
-         <div class="carousel-item" data-bs-interval="7000">
+         <div class="carousel-item" data-bs-interval="5000">
             <img src="<?= base_url('/img/default/background_02.jpg') ?>" class="d-block w-100">
          </div>
-         <div class="carousel-item" data-bs-interval="7000">
+         <div class="carousel-item" data-bs-interval="5000">
             <img src="<?= base_url('/img/default/background_03.jpg') ?>" class="d-block w-100">
          </div>
       </div>

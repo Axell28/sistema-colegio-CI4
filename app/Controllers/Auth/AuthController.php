@@ -6,6 +6,7 @@ use App\Models\AnioModel;
 use App\Models\ModuloModel;
 use App\Models\UsuarioModel;
 use App\Controllers\BaseController;
+use App\Models\InstitucionModel;
 
 class AuthController extends BaseController
 {

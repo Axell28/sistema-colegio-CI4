@@ -39,6 +39,7 @@ class PublicacionesController extends BaseController
       $viewData = new ViewData();
       $datosModel = new Models\DatosModel();
       $perfilModel = new Models\PerfilModel();
+      $publicacionDestModel = new Models\PublicacionDestModel();
       $datosPublicacion = $this->publicacionModel->getDatosDefault();
       $action = 'I';
       if (!empty($codpub)) {
@@ -49,6 +50,7 @@ class PublicacionesController extends BaseController
       $viewData->set('codpub', $codpub);
       $viewData->set('listaTiposPub', $datosModel->listarDatos('009'));
       $viewData->set('listaPerfiles', $perfilModel->listarPerfiles());
+      $viewData->set('listarDestinatarios', $publicacionDestModel->listarDestinatarios($codpub));
       $viewData->set('datosPublicacion', $datosPublicacion);
       return view('intranet/publicaciones/editor', $viewData->get());
    }

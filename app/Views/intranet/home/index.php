@@ -175,6 +175,8 @@
             <div class="card card-main mb-4">
                <div class="card-body text-center py-4">
                   <p class="mb-0">No hay contenido para mostrar</p>
+                  <br>
+                  <img src="<?= base_url('img/default/4354122.jpg') ?>" width="300">
                </div>
             </div>
          <?php } ?>

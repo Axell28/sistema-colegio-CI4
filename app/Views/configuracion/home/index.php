@@ -6,7 +6,7 @@
          <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                <li class="breadcrumb-item"><a href="<?= MODULO_URL ?>"><?= MODULO_NAME ?></a></li>
-               <li class="breadcrumb-item active" aria-current="page">Home</li>
+               <li class="breadcrumb-item active" aria-current="page">Principal</li>
             </ol>
          </nav>
       </div>

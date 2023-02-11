@@ -166,7 +166,7 @@
                text: "Registrado por",
                datafield: "usuario_nomb",
                align: 'center',
-               width: "auto",
+               width: "16%",
             },
             {
                text: '',

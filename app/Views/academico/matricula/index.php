@@ -60,6 +60,13 @@
    </div>
 </div>
 
+<form id="frmRepFicha" action="<?= MODULO_URL ?>/reporte/generate" target="_blank" method="post">
+   <input type="hidden" name="codrep" value="0005">
+   <input type="hidden" name="anio" id="rep_anio" value="">
+   <input type="hidden" name="codalu" id="rep_codalu" value="">
+   <input type="hidden" name="codmat" id="rep_codmat" value="">
+</form>
+
 <div class="modal fade" id="modalMatricula" tabindex="-1" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable"></div>
 </div>
@@ -100,7 +107,8 @@
          },
          {
             name: 'fecmat',
-            type: 'string'
+            type: 'date',
+            format: 'yyyy-MM-dd'
          },
          {
             name: 'fecsal',
@@ -116,7 +124,8 @@
          },
          {
             name: 'fecreg',
-            type: 'string'
+            type: 'date',
+            format: 'yyyy-MM-dd HH:mm:ss'
          },
          {
             name: 'salondes',
@@ -132,6 +141,18 @@
          },
          {
             name: 'ngs',
+            type: 'string'
+         },
+         {
+            name: 'nivel',
+            type: 'string'
+         },
+         {
+            name: 'grado',
+            type: 'string'
+         },
+         {
+            name: 'seccion',
             type: 'string'
          },
          {
@@ -173,12 +194,22 @@
       });
    }
 
+   function generarFichaMatricula(index) {
+      let data = $(jqxgridMatricula).jqxGrid('getrowdata', index);
+      $('#rep_anio').val($('#cmbAnioF').val());
+      $('#rep_codalu').val(data.codalu);
+      $('#rep_codmat').val(data.codmat);
+      $('#frmRepFicha').submit();
+   }
+
    $(document).ready(function() {
 
       $(jqxgridMatricula).jqxGrid({
          width: '100%',
          height: 670,
          source: jqxgridMatriculaAdapter,
+         pagermode: 'simple',
+         selectionmode: 'none',
          showfilterrow: true,
          filterable: true,
          columns: [{
@@ -186,13 +217,15 @@
                datafield: "codmat",
                align: 'center',
                cellsalign: 'center',
-               width: "120",
+               width: "110",
+               pinned: true
             },
             {
                text: "Apellidos y Nombres",
                datafield: "alunomb",
                align: 'center',
-               width: "340",
+               width: "320",
+               pinned: true
             },
             {
                text: "Fecha Matrícula",
@@ -201,20 +234,36 @@
                cellsalign: 'center',
                width: "150",
                filterable: false,
+               cellsformat: 'dd/MM/yyyy'
             },
             {
-               text: "NGS",
-               datafield: "ngs",
+               text: "N",
+               datafield: "nivel",
                align: 'center',
                cellsalign: 'center',
-               width: "80",
+               width: "45",
+               filterable: false,
+            },
+            {
+               text: "G",
+               datafield: "grado",
+               align: 'center',
+               cellsalign: 'center',
+               width: "45",
+               filterable: false,
+            },
+            {
+               text: "S",
+               datafield: "seccion",
+               align: 'center',
+               cellsalign: 'center',
+               width: "45",
                filterable: false,
             },
             {
                text: "Salón",
                datafield: "salondes",
                align: 'center',
-               cellsalign: 'center',
                width: "200",
                filterable: false,
             },
@@ -230,7 +279,41 @@
                text: "Registrado por",
                datafield: "usunomreg",
                align: 'center',
-               width: "250"
+               width: "250",
+               filterable: false,
+            },
+            {
+               text: "Fecha. registro",
+               datafield: "fecreg",
+               align: 'center',
+               cellsalign: 'center',
+               width: "200",
+               filterable: false,
+               cellsformat: 'dd/MM/yyyy hh:mm tt'
+            },
+            {
+               text: '',
+               width: '4%',
+               filterable: false,
+               cellsrenderer: function(row, column, value) {
+                  return `<div class="jqx-center-align"><button class="btn btn-link text-success" onclick="generarFichaMatricula(${row})" title="Ficha matrícula"><i class="fas fa-file-alt"></i></button></div>`;
+               }
+            },
+            {
+               text: '',
+               width: '4%',
+               filterable: false,
+               cellsrenderer: function(row, column, value) {
+                  return `<div class="jqx-center-align"><button class="btn btn-link text-info" title="Editar"><i class="fas fa-pencil-alt"></i></button></div>`;
+               }
+            },
+            {
+               text: '',
+               width: '4%',
+               filterable: false,
+               cellsrenderer: function(row, column, value) {
+                  return `<div class="jqx-center-align"><button class="btn btn-link text-danger" title="Eliminar"><i class="far fa-trash-alt"></i></button></div>`;
+               }
             },
          ]
       });
@@ -252,6 +335,27 @@
          } else {
             showAlertSweet('El año ' + anio + ' no esta activo para la matricula', 'warning');
          }
+      });
+
+      $('.form-select').change(function(e) {
+         $.ajax({
+            type: "POST",
+            url: "<?= MODULO_URL ?>/matricula/json/listar",
+            data: {
+               anioF: $('#cmbAnioF').val(),
+               nivelF: $('#cmbNivelF').val(),
+               gradoF: $('#cmbGradoF').val()
+            },
+            beforeSend: function() {
+               $(jqxgridMatricula).jqxGrid('showloadelement');
+            },
+            success: function(response) {
+               if (response.listaRegistroMatricula) {
+                  jqxgridMatriculaSource.localdata = response.listaRegistroMatricula;
+                  $(jqxgridMatricula).jqxGrid('updateBoundData', 'data');
+               }
+            }
+         });
       });
 
    });

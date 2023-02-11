@@ -47,18 +47,28 @@
    #quitarPhoto {
       display: none;
    }
+
+   #btnActivarUsuario {
+      display: none;
+   }
 </style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="container-fluid">
    <div class="row mt-1 mb-3">
-      <div class="col-lg-12">
+      <div class="col-lg-8 my-auto">
          <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                <li class="breadcrumb-item"><a href="<?= MODULO_URL ?>"><?= MODULO_NAME ?></a></li>
                <li class="breadcrumb-item active" aria-current="page">Mantenimiento Alumno</li>
             </ol>
          </nav>
+      </div>
+      <div class="col-sm text-end my-auto">
+         <button class="btn btn-warning btn-sm" id="btnActivarUsuario">
+            <i class="fas fa-shield-check"></i>
+            <span>&nbsp;Activar usuario</span>
+         </button>
       </div>
    </div>
    <div class="row">
@@ -426,6 +436,7 @@
    const listaSecciones = JSON.parse(`<?= json_encode(esc($listaSecciones)) ?>`);
    const listaProvincias = JSON.parse(`<?= json_encode(esc($listaProvincias)) ?>`);
    const listaDistritos = JSON.parse(`<?= json_encode(esc($listaDistritos)) ?>`);
+   const listaHistorialMatricula = JSON.parse(`<?= json_encode(@$listaHistorialMatricula) ?>`);
 
    const jqxgridAlumnosSource = {
       datatype: 'json',
@@ -471,6 +482,8 @@
       $('#cmbgrado').prop('disabled', false);
       $('#cmbnivel').prop('disabled', false);
       $('#cmbseccion').prop('disabled', false);
+      $('#btnActivarUsuario').hide();
+      $('#cmbfamilia').change();
       $(jqxgridAlumnos).jqxGrid('clearselection');
       frmAlumno.classList.remove('was-validated');
    }
@@ -522,7 +535,12 @@
       $('#txtmotsal').val(data.motsal);
       $('#cmbfamilia').val(data.codfam);
       $('#cmbfamilia').change();
-
+      
+      if (data.matricula == 'S') {
+         $('#cmbmatricula').val('S');
+      } else {
+         $('#cmbmatricula').val('N');
+      }
       $('#cmbnivel').val(data.nivel);
       $('#cmbnivel').change();
       $('#cmbgrado').val(data.grado);
@@ -541,12 +559,28 @@
          $('.photo-box img').attr('src', src);
          $('#quitarPhoto').hide();
       }
+
+      if (data.tiene_usuario == 'S') {
+         $('#btnActivarUsuario').hide();
+      } else {
+         $('#btnActivarUsuario').show();
+      }
+
+      if(listaHistorialMatricula[data.codalu]) {
+         jqxgridListadoMatriculaSource.localdata = listaHistorialMatricula[data.codalu];
+         $(jqxgridListadoMatricula).jqxGrid('updateBoundData', 'data');
+      } else {
+         jqxgridListadoMatriculaSource.localdata = '[]';
+         $(jqxgridListadoMatricula).jqxGrid('updateBoundData', 'data');
+      }
+
       $('#cmbgrado').prop('disabled', true);
       $('#cmbnivel').prop('disabled', true);
       $('#cmbseccion').prop('disabled', true);
       $('#btnDelete').prop('disabled', false);
       $('#cmbestado').prop('disabled', true);
       $('#cmbanioing').prop('disabled', true);
+
    }
 
    function guardarAlumno() {
@@ -743,30 +777,35 @@
                text: "N",
                datafield: 'nivel',
                align: 'center',
+               cellsalign: 'center',
                width: "8%",
             },
             {
                text: "G",
                datafield: 'grado',
                align: 'center',
+               cellsalign: 'center',
                width: "8%",
             },
             {
                text: "S",
                datafield: 'seccion',
                align: 'center',
+               cellsalign: 'center',
                width: "8%",
             },
             {
                text: "Salón",
-               datafield: 'salon',
+               datafield: 'salonnom',
                align: 'center',
                width: "41%",
             },
             {
                text: "Sit. Final",
+               datafield: 'sitacades',
                align: 'center',
                width: "20%",
+               cellsalign: 'center',
             }
          ]
       });
@@ -873,6 +912,38 @@
 
       $('#quitarPhoto').click(function(e) {
          eliminarFotoAlumno();
+      });
+
+      $('#btnActivarUsuario').click(function(e) {
+         let index = $(jqxgridAlumnos).jqxGrid('getselectedrowindex');
+         let rowdata = $(jqxgridAlumnos).jqxGrid('getrowdata', index);
+         $.ajax({
+            type: "POST",
+            url: "<?= MODULO_URL ?>/mantenimiento-alumno/json/activar-usuario",
+            data: {
+               codigo: rowdata.codalu,
+               nomcomp: rowdata.nomcomp,
+               apellidos: rowdata.apepat + " " + rowdata.apemat,
+               nombres: rowdata.nombres,
+               email: rowdata.email
+            },
+            success: function(response) {
+               if (response.listaAlumnos) {
+                  showAlertSweet('Usuario activado correctamente!', 'success');
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Usuario activado',
+                     text: '',
+                     html: `<div class="mb-2">Usuario:&nbsp; ${response.usuario}</div><div>Contraseña:&nbsp; ${response.password}</div>`,
+                     allowOutsideClick: false
+                  });
+                  $('#btnActivarUsuario').hide();
+                  jqxgridAlumnosSource.localdata = response.listaAlumnos;
+                  $(jqxgridAlumnos).jqxGrid('updateBoundData', 'data');
+                  $(jqxgridAlumnos).jqxGrid('selectrow', $(jqxgridAlumnos).jqxGrid('getselectedrowindex'));
+               }
+            }
+         });
       });
 
       $('#cmbfilnivel').change(function(e) {

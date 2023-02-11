@@ -126,4 +126,48 @@ class CurriculoModel extends Model
       $result = $query->get();
       return $result->getResultArray();
    }
+
+   public function listarCursosIntranet(array $params)
+   {
+      $porEngargado = isset($params['codemp']);
+      $query = $this->db->table('curriculo c')
+         ->distinct()
+         ->select(array(
+            "s.salon",
+            "s.nombre as salondes",
+            "s.tutor",
+            "c.nivel",
+            "c.grado",
+            "c.curso",
+            "cu.nombre as curnomb",
+            "ac.codemp as docentecod",
+            "CONCAT(UPPER(p.nombres), ' ', p.apepat, ' ', p.apemat) AS docentenom"
+         ))
+         ->join("salon s", "s.nivel = c.nivel and s.grado = c.grado", "INNER")
+         ->join("curso cu", "cu.codcur = c.curso", "INNER")
+         ->join("asignacion_curso ac", "ac.salon = s.salon and ac.codcur = c.curso", $porEngargado ? "INNER" : "LEFT")
+         ->join("empleado e", "e.codemp = ac.codemp", $porEngargado ? "INNER" : "LEFT")
+         ->join("persona p", "p.codper = e.codper", "LEFT")
+         ->where('s.anio', $params['anio']);
+
+      $query->where(new RawSql("NOT EXISTS (SELECT 1 FROM curriculo t1 where t1.anio = c.anio AND t1.nivel = c.nivel AND t1.grado = c.grado AND t1.curpad = c.curso)"));
+      $query->orderBy('s.nivel, s.grado, s.seccion, c.orden');
+
+      if ($porEngargado) {
+         $query->where('ac.codemp', $params['codemp']);
+      }
+
+      if (isset($params['salon'])) {
+         $query->where('s.salon', $params['salon']);
+      }
+
+      $result = $query->get()->getResultArray();
+      $nuevoArray = array();
+      foreach ($result as $value) :
+         $nuevoArray[$value['salon']]['nombre'] = $value['salondes'];
+         $nuevoArray[$value['salon']]['codigo'] = $value['salon'];
+         $nuevoArray[$value['salon']]['cursos'][] = $value;
+      endforeach;
+      return $nuevoArray;
+   }
 }

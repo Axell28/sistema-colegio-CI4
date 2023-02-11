@@ -41,6 +41,8 @@ class ViewData
          $this->set('layout_menu_name', isset($fullPathUrl[1]) ? "/" . $fullPathUrl[1] : null);
          $this->set('layout_menuArbol', $tmpArbolMenu);
          $this->set('institucion_nombre', $institucionModel->obtenerNombre());
+         $this->set('COLOR_PRIMARIO', $institucionModel->select('colorpri')->first()['colorpri']);
+         $this->set('COLOR_SECUNDARIO', $institucionModel->select('colorsec')->first()['colorsec']);
          $this->set('usuario_photo', $usuarioModel->obtenerFoto());
       }
       return $this->data;

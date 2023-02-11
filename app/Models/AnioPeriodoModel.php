@@ -27,8 +27,17 @@ class AnioPeriodoModel extends Model
      {
           $query = $this->db->table('anio_periodo p')
                ->select(array(
-                    "p.*",
+                    "p.anio",
+                    "p.periodo",
+                    "p.tipo",
+                    "p.fecini",
+                    "p.fecfin",
                     "dd.descripcion AS periododes",
+                    new RawSql("
+                    case when now() between p.fecini and p.fecfin then 'A' 
+                         when now() < p.fecfin then 'B'
+                         else 'F' 
+                    end as estado"),
                     new RawSql("
                     case when now() between p.fecini and p.fecfin then 'Vigente' 
                          when now() < p.fecfin then 'Bloqueado'

@@ -161,6 +161,12 @@ class EmpleadoModel extends Model
       }
    }
 
+   public function verificarDocente($codigo)
+   {
+      $query = $this->select()->where(array('codemp' => $codigo, 'docente' => 'S'))->first();
+      return !empty($query);
+   }
+
    public function generarCodigo($anio)
    {
       $result = $this->db->query("SELECT fu_generar_codigo('E', '{$anio}') AS codigo")->getRow();

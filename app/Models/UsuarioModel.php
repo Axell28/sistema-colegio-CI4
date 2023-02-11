@@ -21,6 +21,31 @@ class UsuarioModel extends Model
    protected $createdField  = 'fecreg';
    protected $updatedField  = 'fecmod';
 
+   public function generarUsuario(array $params)
+   {
+      $retorno = array();
+      try {
+         $this->db->transBegin();
+         $nombreUsuario = $this->generarCodigoUsuario($params['apellidos'], $params['nombres']);
+         $passwdUsuario = self::generarPassword(10);
+         $this->insert(array(
+            'usuario' => $nombreUsuario,
+            'perfil'  => $params['perfil'],
+            'nombre'  => $params['nomcomp'],
+            'passwd'  => password_hash($passwdUsuario, PASSWORD_DEFAULT),
+            'codigo'  => $params['codigo'],
+            'entidad' => $params['entidad'],
+            'estado'  => 'A'
+         ));
+         $this->db->transCommit();
+         $retorno['usuario'] = $nombreUsuario;
+         $retorno['password'] = $passwdUsuario;
+         return $retorno;
+      } catch (\Exception $ex) {
+         $this->db->transRollback();
+         throw new \Exception($ex->getMessage());
+      }
+   }
 
    public function listarUsuarios(array $params = array())
    {
@@ -161,5 +186,16 @@ class UsuarioModel extends Model
    private static function cortarString($s, $t)
    {
       return (substr($s, 0, $t));
+   }
+
+   private static function generarPassword($tamanio = 9)
+   {
+      $pwd = "";
+      $pattern = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ*#@&";
+      $max = strlen($pattern) - 1;
+      for ($i = 0; $i < $tamanio; $i++) {
+         $pwd .= substr($pattern, mt_rand(0, $max), 1);
+      }
+      return $pwd;
    }
 }

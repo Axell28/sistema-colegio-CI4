@@ -21,6 +21,14 @@
 
 <body>
 
+   <!-- Colores del sistema -->
+   <style>
+      :root {
+         --color-default-primary: <?= @$COLOR_PRIMARIO ?>;
+         --color-default-secondary: <?= @$COLOR_SECUNDARIO ?>;
+      }
+   </style>
+
    <!-- Archivos Javascript -->
    <script src="<?= base_url('js/pace.min.js') ?>"></script>
    <script src="<?= base_url('js/jquery.min.js') ?>"></script>

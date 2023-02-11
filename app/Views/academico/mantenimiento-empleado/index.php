@@ -52,7 +52,7 @@
 <?= $this->section('content') ?>
 <div class="container-fluid">
    <div class="row mt-1 mb-3">
-      <div class="col-lg-12">
+      <div class="col-lg-12 my-auto">
          <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                <li class="breadcrumb-item"><a href="<?= MODULO_URL ?>"><?= MODULO_NAME ?></a></li>
@@ -60,6 +60,12 @@
             </ol>
          </nav>
       </div>
+      <!-- <div class="col-sm text-end my-auto">
+         <button class="btn btn-warning btn-sm">
+            <i class="fas fa-shield-check"></i>
+            <span>&nbsp;Activar usuario</span>
+         </button>
+      </div> -->
    </div>
    <div class="row">
       <div class="col-md-6">

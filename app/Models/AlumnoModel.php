@@ -42,7 +42,7 @@ class AlumnoModel extends Model
    {
       $query = $this->db->table('alumno a')
          ->select(array(
-            'a.codalu', 'a.codfam', 'a.anioing', 'a.fecing',
+            'a.codalu', 'a.codfam', 'a.anioing',
             'a.fecsal', 'a.nivel', 'a.grado', 'a.seccion',
             "COALESCE(a.matricula, 'N') AS matricula", 'a.estado',
             'a.fecing', 'a.fecsal', 'a.motsal', 'a.fotourl',
@@ -50,11 +50,13 @@ class AlumnoModel extends Model
             new RawSql("TRIM(SUBSTR(p.ubgdir, 1, 2)) AS dept"),
             new RawSql("TRIM(SUBSTR(p.ubgdir, 1, 4)) AS prov"),
             new RawSql("(CASE WHEN a.estado = 'A' THEN 'Activo' ELSE 'Inactivo' END) AS estado_des"),
-            new RawSql("CONCAT(p.apepat, ' ', p.apemat, ', ', p.nombres) AS nomcomp")
+            new RawSql("CONCAT(p.apepat, ' ', p.apemat, ', ', p.nombres) AS nomcomp"),
+            new RawSql("(CASE WHEN COALESCE(u.usuario, '') = '' THEN 'N' ELSE 'S' END) AS tiene_usuario")
          ))
          ->join('persona p', 'p.codper = a.codper', 'INNER')
          ->join('nivel n', 'n.nivel = a.nivel', 'LEFT')
-         ->join('grado g', 'g.nivel = n.nivel AND g.grado = a.grado', 'LEFT');
+         ->join('grado g', 'g.nivel = n.nivel AND g.grado = a.grado', 'LEFT')
+         ->join('usuario u', 'u.codigo = a.codalu', 'LEFT');
 
       if (isset($params['estado']) && !empty($params['estado'])) {
          $query->where('a.estado', $params['estado']);
@@ -85,6 +87,7 @@ class AlumnoModel extends Model
          ->join('persona p', 'p.codper = a.codper', 'INNER');
 
       $query->where(new RawSql("COALESCE(a.matricula, 'N') = 'N'"));
+      $query->where('a.estado', 'A');
       $query->orderBy('p.apepat, p.apemat');
       $result = $query->get();
       return $result->getResultArray();
@@ -207,6 +210,12 @@ class AlumnoModel extends Model
          $this->db->transRollback();
          throw new \Exception($ex->getMessage(), $ex->getCode());
       }
+   }
+
+   public function verificarAlumno($codigo)
+   {
+      $query = $this->select()->where('codalu', $codigo)->first();
+      return !empty($query);
    }
 
    public function generarCodigo($anio)

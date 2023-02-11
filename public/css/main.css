@@ -4,8 +4,8 @@
    --color-menu: rgb(255, 255, 255, .85);
    --color-bg-body: rgb(247, 247, 255);
    --header-height: 60px;
-   --color-default-primary: #090f31;
-   --color-default-secondary: #489662;
+   --color-default-primary: #222222;
+   --color-default-secondary: #b5c710;
 }
 
 body {
@@ -152,7 +152,7 @@ aside.menu {
 }
 
 .menu ul.sub li i {
-   line-height: 32px;
+   line-height: 36px;
    font-size: 1em;
 }
 
@@ -167,12 +167,12 @@ aside.menu {
 
 .menu ul:not(.sub) li a:hover {
    color: #fff;
-   background-color: rgba(54, 69, 121, 0.5);
+   background-color: rgba(103, 103, 104, 0.5);
 }
 
 .menu ul:not(.sub) li.active a {
    color: #fff;
-   background-color: rgba(54, 69, 121, 0.5);
+   background-color: rgba(103, 103, 104, 0.5);
 }
 
 .menu li.active ul.sub a:hover {

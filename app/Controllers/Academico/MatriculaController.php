@@ -44,13 +44,14 @@ class MatriculaController extends BaseController
       $gradoModel = new Models\GradoModel();
       $seccionModel = new Models\SeccionModel();
       $alumnoModel = new Models\AlumnoModel();
-      $viewData->set('listaSitMat', $datosModel->listarDatos('012'));
+      $viewData->set('listaCondicion', $datosModel->listarDatos('012'));
       $viewData->set('listaNiveles', $nivelModel->listarNiveles());
       $viewData->set('listaGrados', $gradoModel->listarGrados());
       $viewData->set('listaSecciones', $seccionModel->listarSecciones());
       $viewData->set('listaAnioMatricula', $anioModel->listarAniosMatricula());
       $viewData->set('listaFamiliarResponsable', $alumnoModel->listarFamResponsable());
       $viewData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
+      $viewData->set('listaHistorialMatricula', $this->matriculaModel->obtenerDatosMatricula(array(), true));
       return view('academico/matricula/registro', $viewData->get());
    }
 
@@ -60,7 +61,17 @@ class MatriculaController extends BaseController
       $salonModel = new Models\SalonModel();
       $alumnoModel = new Models\AlumnoModel();
       try {
+         $anioF = $this->request->getPost('anioF');
+         $nivelF = $this->request->getPost('nivelF');
+         $gradoF = $this->request->getPost('gradoF');
          switch ($case):
+            case 'listar':
+               $jsonData->set('listaRegistroMatricula', $this->matriculaModel->listarRegistroMatricula(array(
+                  'anio'  => $anioF,
+                  'nivel' => $nivelF,
+                  'grado' => $gradoF
+               )));
+               break;
             case 'save-matricula':
                $nivel   = $this->request->getPost('nivel');
                $grado   = $this->request->getPost('grado');
@@ -81,10 +92,12 @@ class MatriculaController extends BaseController
                   'codalu' => $this->request->getPost('alumno'),
                   'fecmat' => $this->request->getPost('fecmat'),
                   'salon'  => $salonDest['salon'],
-                  'observacion' => $this->request->getPost('observacion')
+                  'condicion' => $this->request->getPost('condicion')
                );
+
                $codMatricula = $this->matriculaModel->registrarMatricula($values);
-               $jsonData->set('message', 'OK');
+
+               $jsonData->set('codmat', $codMatricula);
                $jsonData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
                break;
          endswitch;

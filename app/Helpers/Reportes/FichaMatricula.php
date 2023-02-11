@@ -45,7 +45,7 @@ class FichaMatricula
           $this->fpdf->Cell(117, 9, "  " . $datosMatricula['fecmat'], 1, 1, "L");
           
           $this->fpdf->Cell(50, 9, utf8_decode(" Grado"), 1, 0, "L");
-          $this->fpdf->Cell(60, 9, "  " . $datosMatricula['salonnom'], 1, 0, "L");
+          $this->fpdf->Cell(60, 9, "  " . utf8_decode($datosMatricula['salonnom']), 1, 0, "L");
           $this->fpdf->Cell(27, 9, utf8_decode(" Sección"), 1, 0, "L");
           $this->fpdf->Cell(30, 9, "  " . $datosMatricula['secciondes'], 1, 1, "L");
 
@@ -60,7 +60,7 @@ class FichaMatricula
           $this->fpdf->Cell(50, 9, utf8_decode(" Código"), 1, 0, "L");
           $this->fpdf->Cell(117, 9, "  " . $datosMatricula['codalu'], 1, 1, "L");
           $this->fpdf->Cell(50, 9, utf8_decode(" Apellidos y Nombres"), 1, 0, "L");
-          $this->fpdf->Cell(117, 9, "  " . $datosAlumno['nomcomp'], 1, 1, "L");
+          $this->fpdf->Cell(117, 9, "  " . utf8_decode($datosAlumno['nomcomp']), 1, 1, "L");
           $this->fpdf->Cell(50, 9, utf8_decode(" Doc. Identidad"), 1, 0, "L");
           $this->fpdf->Cell(117, 9, "  " . $datosAlumno['numdoc'], 1, 1, "L");
           $this->fpdf->Cell(50, 9, utf8_decode(" Fec. Nacimiento"), 1, 0, "L");
@@ -75,7 +75,7 @@ class FichaMatricula
           $this->fpdf->Ln(3);
           $this->fpdf->SetFont('Arial', '', 10);
           $this->fpdf->Cell(50, 9, utf8_decode(" Apellidos y Nombres"), 1, 0, "L");
-          $this->fpdf->Cell(117, 9, "  " . $datosFamiliaRep['nomcomp'], 1, 1, "L");
+          $this->fpdf->Cell(117, 9, "  " . utf8_decode($datosFamiliaRep['nomcomp']), 1, 1, "L");
           $this->fpdf->Cell(50, 9, utf8_decode(" Parentesco"), 1, 0, "L");
           $this->fpdf->Cell(117, 9, "  " . $datosFamiliaRep['parentdes'], 1, 1, "L");
           $this->fpdf->Cell(50, 9, utf8_decode(" Doc. Identidad"), 1, 0, "L");

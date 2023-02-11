@@ -14,7 +14,7 @@ class MatriculaModel extends Model
    protected $returnType     = 'array';
    protected $useSoftDeletes = false;
 
-   protected $allowedFields = ['codmat', 'anio', 'salon', 'codalu', 'fecmat', 'fecsal', 'sitaca', 'motvret', 'observacion', 'modalidad', 'fecreg', 'usureg', 'fecmod', 'usumod'];
+   protected $allowedFields = ['codmat', 'anio', 'salon', 'codalu', 'fecmat', 'fecsal', 'sitaca', 'motvret', 'observacion', 'modalidad', 'condicion', 'fecreg', 'usureg', 'fecmod', 'usumod'];
 
    protected $useTimestamps = true;
    protected $dateFormat    = 'datetime';
@@ -26,6 +26,9 @@ class MatriculaModel extends Model
       $query = $this->db->table('matricula m')
          ->select(array(
             "m.*",
+            "s.nivel",
+            "s.grado",
+            "s.seccion",
             "s.nombre AS salondes",
             "CONCAT(s.nivel, s.grado, s.seccion) AS ngs",
             "CONCAT(p.apepat, ' ', p.apemat, ', ', p.nombres) AS alunomb",
@@ -57,6 +60,11 @@ class MatriculaModel extends Model
          $query->where("s.salon", $params['salon']);
       }
 
+      if (isset($params['codalu'])) {
+         $query->where('m.codalu', $params['codalu']);
+         return $query->get()->getRowArray();
+      }
+
       $result = $query->get();
       return $result->getResultArray();
    }
@@ -66,6 +74,7 @@ class MatriculaModel extends Model
       try {
          $this->db->transBegin();
          $alumnoModel = new AlumnoModel();
+         $salonModel = new SalonModel();
          $codigoMatr = $this->generarCodigo($params['anio']);
          $this->insert(array(
             'codmat' => $codigoMatr,
@@ -73,10 +82,17 @@ class MatriculaModel extends Model
             'salon' => $params['salon'],
             'codalu' => $params['codalu'],
             'fecmat' => date('Y-m-d'),
-            'observacion' => $params['observacion'],
+            'condicion' => $params['condicion'],
+            'sitaca' => 'V',
             'usureg' => USUARIO
          ));
-         $alumnoModel->set('matricula', 'S')->update($params['codalu']);
+         $datosSalon = $salonModel->find($params['salon']);
+         $alumnoModel->set(array(
+            'nivel' => $datosSalon['nivel'],
+            'grado' => $datosSalon['grado'],
+            'seccion' => $datosSalon['seccion'],
+            'matricula' => 'S'
+         ))->update($params['codalu']);
          $this->db->transCommit();
          return $codigoMatr;
       } catch (\Exception $ex) {
@@ -85,7 +101,7 @@ class MatriculaModel extends Model
       }
    }
 
-   public function obtenerDatosMatricula(array $params)
+   public function obtenerDatosMatricula(array $params, $keyPorAlumno = false)
    {
       $query = $this->db->table('matricula m')
          ->select(array(
@@ -97,13 +113,15 @@ class MatriculaModel extends Model
             "n.descripcion AS niveldes",
             "g.descripcion AS gradodes",
             "se.descripcion AS secciondes",
-            "dd.descripcion AS condiciondes"
+            "dd.descripcion AS sitacades",
+            "dd2.descripcion AS condiciondes"
          ))
          ->join("salon s", "s.salon = m.salon", "INNER")
          ->join("nivel n", "n.nivel = s.nivel", "INNER")
          ->join("grado g", "g.nivel = s.nivel AND g.grado = s.grado", "INNER")
          ->join("seccion se", "se.nivel = s.nivel AND se.grado = s.grado AND se.seccion = s.seccion", "INNER")
-         ->join("datosdet dd", "dd.coddat = '012' and dd.coddet = m.condicion", "LEFT");
+         ->join("datosdet dd", "dd.coddat = '013' and dd.coddet = m.sitaca", "LEFT")
+         ->join("datosdet dd2", "dd.coddat = '012' and dd.coddet = m.condicion", "LEFT");
 
       if (isset($params['codmat'])) {
          $query->where('m.codmat', $params['codmat']);
@@ -114,9 +132,16 @@ class MatriculaModel extends Model
       if (isset($params['codalu'])) {
          $query->where('m.codalu', $params['codalu']);
       }
-
-      $result = $query->get();
-      return $result->getResultArray();
+      $result = $query->get()->getResultArray();
+      $nuevoResult = array();
+      if ($keyPorAlumno) {
+         foreach ($result as $value) {
+            $nuevoResult[$value['codalu']][] = $value;
+         }
+      } else {
+         $nuevoResult = $result;
+      }
+      return $nuevoResult;
    }
 
    public function generarCodigo($anio)

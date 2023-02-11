@@ -58,6 +58,18 @@
           <div class="col-lg-6">
                <div class="card card-main">
                     <div class="card-body">
+                         <h5 class="linea mb-3"><span>Alumno(a)</span></h5>
+                         <div class="row mb-4">
+                              <div class="col-12">
+                                   <label for="txtalunom" class="form-label">Apellidos y Nombres:</label>
+                                   <input type="text" class="form-control" id="txtalunom" required disabled>
+                              </div>
+                         </div>
+                         <div class="mb-4">
+                              <h5 class="linea mb-3"><span>Historial de Matricula</span></h5>
+                              <div id="jqxgridHistorialMatricula"></div>
+                         </div>
+
                          <form id="frmMatricula" class="needs-validation" autocomplete="off" novalidate>
                               <h5 class="linea mb-3"><span>Datos de Matrícula</span></h5>
                               <div class="row mb-3">
@@ -73,8 +85,17 @@
                                         <label for="txtfecmat" class="form-label">Fecha matrícula:</label>
                                         <input type="date" class="form-control" id="txtfecmat" value="<?= date('Y-m-d') ?>" disabled>
                                    </div>
+                                   <div class="col-sm-4">
+                                        <label for="cmbCondicion" class="form-label">Condición:</label>
+                                        <select class="form-select" id="cmbCondicion" required>
+                                             <option value="">-Seleccione-</option>
+                                             <?php foreach (@$listaCondicion as $value) { ?>
+                                                  <option value="<?= $value['codigo'] ?>"><?= $value['descripcion'] ?></option>
+                                             <?php } ?>
+                                        </select>
+                                   </div>
                               </div>
-                              <div class="row mb-3">
+                              <div class="row mb-4">
                                    <div class="col-sm-4">
                                         <label for="cmbNivel" class="form-label">Nivel:</label>
                                         <select class="form-select" id="cmbNivel" required>
@@ -95,30 +116,6 @@
                                         <select class="form-select" id="cmbSeccion" required>
                                              <option value="">-Seleccione-</option>
                                         </select>
-                                   </div>
-                              </div>
-                              <div class="row mb-4">
-                                   <div class="col-sm-4">
-                                        <label for="cmbSituacion" class="form-label">Situación:</label>
-                                        <select class="form-select" id="cmbSituacion" required>
-                                             <option value="">-Seleccione-</option>
-                                             <?php foreach (@$listaSitMat as $value) { ?>
-                                                  <option value="<?= $value['codigo'] ?>"><?= $value['descripcion'] ?></option>
-                                             <?php } ?>
-                                        </select>
-                                   </div>
-                                   <div class="col-sm-4">
-                                        <label for="cmbModalidad" class="form-label">Modalidad</label>
-                                        <select class="form-select" id="cmbModalidad">
-                                             <option value="">-Seleccione-</option>
-                                        </select>
-                                   </div>
-                              </div>
-                              <h5 class="linea mb-3"><span>Alumno(a)</span></h5>
-                              <div class="row mb-4">
-                                   <div class="col-12">
-                                        <label for="txtalunom" class="form-label">Apellidos y Nombres:</label>
-                                        <input type="text" class="form-control" id="txtalunom" required disabled>
                                    </div>
                               </div>
                               <h5 class="linea mb-3"><span>Familiar Responsable</span></h5>
@@ -160,8 +157,10 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Notificación</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                </div> -->
-               <div class="modal-body">
-                    <h4>Matrícula registrada correctamente</h4>
+               <div class="modal-body py-4">
+                    <div class="alert alert-success mb-0" role="alert">
+                         <h4 class="mb-0 fw-bold" style="font-size: 14px;">Matrícula registrada correctamente.</h4>
+                    </div>
                </div>
                <div class="modal-footer align-items-center">
                     <button type="button" class="btn btn-danger w-50" id="btnFicha">
@@ -181,24 +180,29 @@
      <input type="hidden" name="codrep" value="0005">
      <input type="hidden" name="anio" id="rep_anio" value="">
      <input type="hidden" name="codalu" id="rep_codalu" value="">
-     <input type="hidden" name="codmat" value="M23020429" id="rep_codmat">
+     <input type="hidden" name="codmat" id="rep_codmat" value="">
 </form>
 
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <script>
      const jqxgridAlumnos = '#jqxgridAlumnos';
+     const jqxgridHistorialMatricula = '#jqxgridHistorialMatricula';
+
      const frmMatricula = document.getElementById('frmMatricula');
      const modalConfirmacion = document.getElementById('modalConfirmacion');
      const listaGrados = JSON.parse(`<?= json_encode(@$listaGrados) ?>`);
      const listaSecciones = JSON.parse(`<?= json_encode(@$listaSecciones) ?>`);
      const listaFamiliarResponsable = JSON.parse(`<?= json_encode(@$listaFamiliarResponsable) ?>`);
+     const listaHistorialMatricula = JSON.parse(`<?= json_encode(@$listaHistorialMatricula) ?>`);
      const modalConfirmacionEvent = new bootstrap.Modal(modalConfirmacion, {
           keyboard: false,
           backdrop: 'static'
      });
 
-     modalConfirmacionEvent.show();
+     modalConfirmacion.addEventListener('hidden.bs.modal', event => {
+          $('#frmMatricula').trigger("reset");
+     });
 
      const jqxgridAlumnosSource = {
           datatype: 'json',
@@ -218,7 +222,14 @@
           localdata: `<?= json_encode(@$listaAlumnosNoMatriculados) ?>`
      };
 
+     const jqxgridHistorialMatriculaSource = {
+          datatype: 'json',
+          localdata: `[]`
+     };
+
      const jqxgridAlumnosAdapter = new $.jqx.dataAdapter(jqxgridAlumnosSource);
+
+     const jqxgridHistorialMatriculaAdapter = new $.jqx.dataAdapter(jqxgridHistorialMatriculaSource);
 
      async function registrarMatricula() {
           let index = $(jqxgridAlumnos).jqxGrid('getselectedrowindex');
@@ -238,22 +249,23 @@
                          nivel: $('#cmbNivel').val(),
                          grado: $('#cmbGrado').val(),
                          seccion: $('#cmbSeccion').val(),
-                         situacion: $('#cmbSituacion').val(),
-                         modalidad: $('#cmbModalidad').val(),
+                         condicion: $('#cmbCondicion').val(),
                          alumno: rowdata.codalu
                     },
                     beforeSend: function() {
                          $('#rep_anio').val($('#cmbAnio').val());
                          $('#rep_codalu').val(rowdata.codalu);
+                         $(jqxgridAlumnos).jqxGrid({
+                              disabled: true
+                         });
                     },
                     success: function(response) {
-                         if (response.message == "OK") {
-                              showAlertSweet('Matrícula registrada correctamente', 'success');
+                         if (response.codmat) {
+                              $('#rep_codmat').val(response.codmat);
                               jqxgridAlumnosSource.localdata = response.listaAlumnosNoMatriculados;
                               $(jqxgridAlumnos).jqxGrid('updateBoundData', 'data');
                               frmMatricula.classList.remove('was-validated');
-                              $('#frmMatricula').trigger("reset");
-                              $('#row_ficha').show();
+                              modalConfirmacionEvent.show();
                          }
                     },
                     error: function(jqXHr, status, error) {
@@ -264,6 +276,11 @@
                               errorMsg = jqXHr.responseText;
                          }
                          showAlertSweet(errorMsg, 'error');
+                    },
+                    complete: function() {
+                         $(jqxgridAlumnos).jqxGrid({
+                              disabled: false
+                         });
                     }
                });
           }
@@ -274,7 +291,7 @@
 
           $(jqxgridAlumnos).jqxGrid({
                width: '100%',
-               height: 670,
+               height: 735,
                source: jqxgridAlumnosAdapter,
                showfilterrow: true,
                filterable: true,
@@ -301,12 +318,64 @@
                ]
           });
 
+          $(jqxgridHistorialMatricula).jqxGrid({
+               width: '100%',
+               height: 148,
+               source: jqxgridHistorialMatriculaAdapter,
+               showfilterrow: false,
+               filterable: false,
+               columns: [{
+                         text: "Año",
+                         datafield: 'anio',
+                         align: 'center',
+                         cellsalign: 'center',
+                         width: "15%",
+                    },
+                    {
+                         text: "N",
+                         datafield: 'nivel',
+                         align: 'center',
+                         cellsalign: 'center',
+                         width: "8%",
+                    },
+                    {
+                         text: "G",
+                         datafield: 'grado',
+                         align: 'center',
+                         cellsalign: 'center',
+                         width: "8%",
+                    },
+                    {
+                         text: "S",
+                         datafield: 'seccion',
+                         align: 'center',
+                         cellsalign: 'center',
+                         width: "8%",
+                    },
+                    {
+                         text: "Salón",
+                         datafield: 'salonnom',
+                         align: 'center',
+                         width: "41%",
+                    },
+                    {
+                         text: "Sit. Final",
+                         datafield: 'sitacades',
+                         align: 'center',
+                         width: "20%",
+                         cellsalign: 'center',
+                    }
+               ]
+          });
+
           $(jqxgridAlumnos).on('rowselect', function(event) {
                const datarow = event.args.row;
                $('#txtalunom').val(datarow.nomcomp);
                $('#btnRegistrar').prop('disabled', false);
                if (listaFamiliarResponsable[datarow.codalu]) {
                     const dataresp = listaFamiliarResponsable[datarow.codalu];
+                    jqxgridHistorialMatriculaSource.localdata = listaHistorialMatricula[datarow.codalu];
+                    $(jqxgridHistorialMatricula).jqxGrid('updateBoundData', 'data');
                     $('#txtfamnom').val(dataresp.nomcomp);
                     $('#txtfamdoc').val(dataresp.numdoc);
                     $('#txtfamtipo').val(dataresp.parentesco);

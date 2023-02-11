@@ -30,6 +30,7 @@ class MantenimientoAlumnoController extends BaseController
       $gradoModel = new Models\GradoModel();
       $seccionModel = new Models\SeccionModel();
       $familiaModel = new Models\FamiliaModel();
+      $matriculaModel = new Models\MatriculaModel();
       $viewData->set('listaAnios', $anioModel->listarAnios());
       $viewData->set('listaNiveles', $nivelModel->listarNiveles());
       $viewData->set('listaGrados', $gradoModel->listarGrados());
@@ -41,6 +42,7 @@ class MantenimientoAlumnoController extends BaseController
       $viewData->set('listaDepartamentos', $ubigeoModel->listarDepartamentos());
       $viewData->set('listaAlumnos', $this->alumnoModel->listarAlumnos(array('estado' => 'A')));
       $viewData->set('listaFamilias', $familiaModel->listarFamiliasCombo());
+      $viewData->set('listaHistorialMatricula', $matriculaModel->obtenerDatosMatricula(array(), true));
       return view('academico/mantenimiento-alumno/index', $viewData->get());
    }
 
@@ -117,6 +119,19 @@ class MantenimientoAlumnoController extends BaseController
                   unlink($pathDirFile);
                }
                $this->alumnoModel->set('fotourl', null)->update($codalu);
+               break;
+            case 'activar-usuario':
+               $usuarioModel = new Models\UsuarioModel();
+               $datosAcceso = $usuarioModel->generarUsuario(array(
+                  'perfil'    => '003',
+                  'apellidos' => $this->request->getPost('apellidos'),
+                  'nombres'   => $this->request->getPost('nombres'),
+                  'nomcomp'   => $this->request->getPost('nomcomp'),
+                  'codigo'    => $this->request->getPost('codigo'),
+                  'entidad'   => 'ALU'
+               ));
+               $jsonData->set('usuario', $datosAcceso['usuario']);
+               $jsonData->set('password', $datosAcceso['password']);
                break;
          endswitch;
          $jsonData->set('listaAlumnos', $this->alumnoModel->listarAlumnos(array(
