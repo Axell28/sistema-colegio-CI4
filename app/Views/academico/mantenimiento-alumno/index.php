@@ -78,7 +78,7 @@
                <div class="row mb-1">
                   <div class="col-sm-3 my-1">
                      <div class="form-floating">
-                        <select class="form-select" id="cmbfilnivel">
+                        <select class="form-select filter" id="cmbfilnivel">
                            <option value="" selected>-Todos-</option>
                            <?php foreach (@$listaNiveles as $val) { ?>
                               <option value="<?= $val['nivel'] ?>"><?= $val['descripcion'] ?></option>
@@ -89,7 +89,7 @@
                   </div>
                   <div class="col-sm-3 my-1">
                      <div class="form-floating">
-                        <select class="form-select" id="cmbfilmatricula">
+                        <select class="form-select filter" id="cmbfilmatricula">
                            <option value="" selected>-Todos-</option>
                            <option value="S">Si</option>
                            <option value="N">No</option>
@@ -423,8 +423,10 @@
 
 <form id="frmReporte" action="<?= MODULO_URL ?>/reporte/generate" target="_blank" method="POST">
    <input type="hidden" name="codrep" value="0003">
+   <input type="hidden" name="matricula" id="rep_matricula" value="">
    <input type="hidden" name="nivel" id="rep_nivel" value="">
    <input type="hidden" name="estado" id="rep_estado" value="">
+   <input type="hidden" name="sexo" id="rep_sexo" value="">
 </form>
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
@@ -493,16 +495,23 @@
          type: "POST",
          url: "<?= MODULO_URL ?>/mantenimiento-alumno/json/listar",
          data: {
+            filnivel: $('#cmbfilnivel').val(),
+            filmatricula: $('#cmbfilmatricula').val(),
             filestado: $('#cmbfilestado').val(),
             filsexo: $('#cmbfilsexo').val()
          },
          beforeSend: function() {
             $(jqxgridAlumnos).jqxGrid('showloadelement');
+            $('#rep_matricula').val($('#cmbfilmatricula').val());
+            $('#rep_nivel').val($('#cmbfilnivel').val());
+            $('#rep_sexo').val($('#cmbfilsexo').val());
+            $('#rep_estado').val($('#cmbfilestado').val());
          },
          success: function(response) {
             if (response.listaAlumnos) {
                jqxgridAlumnosSource.localdata = response.listaAlumnos;
                $(jqxgridAlumnos).jqxGrid('updateBoundData', 'data');
+               totalRegistros();
             }
          }
       });
@@ -535,7 +544,7 @@
       $('#txtmotsal').val(data.motsal);
       $('#cmbfamilia').val(data.codfam);
       $('#cmbfamilia').change();
-      
+
       if (data.matricula == 'S') {
          $('#cmbmatricula').val('S');
       } else {
@@ -566,7 +575,7 @@
          $('#btnActivarUsuario').show();
       }
 
-      if(listaHistorialMatricula[data.codalu]) {
+      if (listaHistorialMatricula[data.codalu]) {
          jqxgridListadoMatriculaSource.localdata = listaHistorialMatricula[data.codalu];
          $(jqxgridListadoMatricula).jqxGrid('updateBoundData', 'data');
       } else {

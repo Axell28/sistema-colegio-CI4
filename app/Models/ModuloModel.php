@@ -44,4 +44,18 @@ class ModuloModel extends Model
       $result = $query->get();
       return $result->getResultArray();
    }
+
+   public function tieneAccesoModulo($modulo, $perfil)
+   {
+      $query = $this->db->table('modulo md')
+         ->select('md.codmod, md.nombre, md.url')
+         ->join('menu m', 'm.codmod = md.codmod', 'INNER')
+         ->join('menu_rol mr', 'mr.codmenu = m.codmenu', 'INNER')
+         ->where('md.estado', 'A');
+      $query->where('mr.perfil', $perfil);
+      $query->where('m.codmod', $modulo);
+      $query->groupBy('m.codmod, md.nombre, md.url');
+      $result = $query->get();
+      return !empty($result->getResultArray());
+   }
 }

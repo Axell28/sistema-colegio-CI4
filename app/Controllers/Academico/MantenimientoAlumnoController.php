@@ -51,6 +51,8 @@ class MantenimientoAlumnoController extends BaseController
       $jsonData = new JsonData();
       try {
          // filtros grilla
+         $filNivel = $this->request->getPost('filnivel');
+         $filmatricula = $this->request->getPost('filmatricula');
          $filEstado = $this->request->getPost('filestado');
          $filsexo = $this->request->getPost('filsexo');
          switch ($caso):
@@ -135,6 +137,8 @@ class MantenimientoAlumnoController extends BaseController
                break;
          endswitch;
          $jsonData->set('listaAlumnos', $this->alumnoModel->listarAlumnos(array(
+            'nivel'  => $filNivel,
+            'matricula' => $filmatricula,
             'estado' => $filEstado,
             'sexo'   => $filsexo
          )));

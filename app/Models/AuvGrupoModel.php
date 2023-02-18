@@ -5,9 +5,9 @@ namespace App\Models;
 use CodeIgniter\Model;
 use CodeIgniter\Database\RawSql;
 
-class AuvCursoGrupoModel extends Model
+class AuvGrupoModel extends Model
 {
-   protected $table      = 'auv_cur_grupo';
+   protected $table      = 'auv_grupo';
    protected $primaryKey = 'codigo';
 
    protected $useAutoIncrement = true;
@@ -45,7 +45,7 @@ class AuvCursoGrupoModel extends Model
 
    public function listarAuvGrupos(array $params)
    {
-      $query = $this->db->table('auv_cur_grupo acg')->select();
+      $query = $this->db->table('auv_grupo acg')->select();
       if (isset($params['salon'])) {
          $query->where('acg.salon', $params['salon']);
       }
@@ -62,7 +62,7 @@ class AuvCursoGrupoModel extends Model
 
    public function listarAuvGruposxPeriodo(array $params)
    {
-      $query = $this->db->table('auv_cur_grupo acg')->select();
+      $query = $this->db->table('auv_grupo acg')->select();
       if (isset($params['salon'])) {
          $query->where('acg.salon', $params['salon']);
       }

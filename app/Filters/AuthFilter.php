@@ -17,7 +17,14 @@ class AuthFilter implements FilterInterface
       }
       $moduloModel = new ModuloModel();
       $moduloURL = "/" . $request->uri->getSegment(1, '');
+
       $datosModulo = $moduloModel->buscarPorUrl($moduloURL);
+
+      $tieneAcceso = $moduloModel->tieneAccesoModulo($datosModulo['codmod'], session()->get('perfil'));
+      if (!$tieneAcceso) {
+         return redirect()->to('/');
+      }
+
       session()->set('modulo', $datosModulo['codmod']);
       session()->set('modulo_url', $datosModulo['url']);
       session()->set('modulo_name', $datosModulo['nombre']);

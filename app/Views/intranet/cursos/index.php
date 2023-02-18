@@ -5,8 +5,6 @@
       color: var(--bs-accordion-active-color);
    }
 
-   .accordion-button:not(.collapsed) {}
-
    .accordion-button i {
       color: #b5c710;
    }
@@ -54,18 +52,18 @@
                   <?php foreach (@$listaCursosIntranet as $salon => $contenido) { ?>
                      <div class="accordion-item">
                         <h2 class="accordion-header" id="acc-heading-<?= $salon ?>">
-                           <button class="accordion-button collapsed py-4" type="button" data-bs-toggle="collapse" data-bs-target="#cur-item-<?= $salon ?>" aria-expanded="false">
+                           <button class="accordion-button <?php echo @$esAlumno ? '' : 'collapsed' ?>  py-4" type="button" data-bs-toggle="collapse" data-bs-target="#cur-item-<?= $salon ?>" aria-expanded="<?php echo @$esAlumno ? 'true' : 'false'?>">
                               <i class="fas fa-layer-group fs-4"></i>
                               <span class="">&nbsp;&nbsp; SALÓN <?= $contenido['nombre'] ?></span>
                            </button>
                         </h2>
-                        <div id="cur-item-<?= $salon ?>" class="accordion-collapse collapse" aria-labelledby="acc-heading-<?= $salon ?>" data-bs-parent="#accordioCursos">
+                        <div id="cur-item-<?= $salon ?>" class="accordion-collapse collapse <?php echo @$esAlumno ? 'show' : '' ?>" aria-labelledby="acc-heading-<?= $salon ?>" data-bs-parent="#accordioCursos">
                            <div class="accordion-body">
                               <?php if (!empty($contenido['cursos'])) { ?>
                                  <div class="row">
                                     <?php foreach ($contenido['cursos'] as $curso) { ?>
                                        <div class="col-sm-4 mb-3 text-black">
-                                          <a href="<?= MODULO_URL ?>/cursos/classroom/<?= $salon ?>/<?= $curso['curso'] ?>" class="card" style="color: black">
+                                          <a href="<?= MODULO_URL ?>/cursos/auv/<?= $salon ?>/<?= $curso['curso'] ?>" class="card" style="color: black">
                                              <div class="card-body">
                                                 <div class="text-center">
                                                    <img src="<?= base_url('img/iconos/curso-por-internet.png') ?>" height="50">

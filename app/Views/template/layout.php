@@ -27,6 +27,10 @@
          --color-default-primary: <?= @$COLOR_PRIMARIO ?>;
          --color-default-secondary: <?= @$COLOR_SECUNDARIO ?>;
       }
+
+      #panel-02-perfil {
+         display: none;
+      }
    </style>
 
    <!-- Archivos Javascript -->

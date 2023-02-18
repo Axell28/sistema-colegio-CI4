@@ -25,7 +25,6 @@ class ReporteAlumnos
       $this->fpdf->SetDrawColor(100, 100, 100);
       $this->params = $params;
       $pivotAlumnos = $this->pivotListadoAlumnos();
-
       $this->encabezado();
       $this->cuerpo($pivotAlumnos);
       $this->fpdf->Output('Reporte_de_alumnos.pdf', 'I');
@@ -39,9 +38,10 @@ class ReporteAlumnos
       $this->fpdf->Image(base_url('uploads/local/escudo.png'), 10, 6, 0, 16);
       $this->fpdf->Cell(0, 7, "REPORTE GENERAL DE ALUMNOS", 0, 1, "C");
       $this->fpdf->SetFont('Arial', '', 9);
-      $this->fpdf->SetX(($this->wt / 2) - 17);
-      $this->fpdf->Cell(26, 7, "Sexo: Todos", 0, 0, "C");
-      $this->fpdf->Cell(26, 7, "Estado: " . $estado, 0, 1, "C");
+      $this->fpdf->SetX(($this->wt / 2) - 29);
+      $this->fpdf->Cell(26, 7, "Nivel: " . (!empty($this->params['nivel']) ? $this->params['nivel'] : 'Todos'), 0, 0, "C");
+      $this->fpdf->Cell(26, 7, "Sexo: " . (!empty($this->params['sexo']) ? $this->params['sexo'] : 'Todos'), 0, 0, "C");
+      $this->fpdf->Cell(26, 7, "Estado: " . (!empty($this->params['estado']) ? $this->params['estado'] : 'Todos'), 0, 1, "C");
       $this->fpdf->Ln(4);
    }
 
@@ -82,6 +82,10 @@ class ReporteAlumnos
    private function pivotListadoAlumnos()
    {
       $alumnoModel = new Models\AlumnoModel();
-      return $alumnoModel->listarAlumnos();
+      return $alumnoModel->listarAlumnos(array(
+         'sexo'  => $this->params['sexo'],
+         'nivel' => $this->params['nivel'],
+         'estado' => $this->params['estado']
+      ));
    }
 }

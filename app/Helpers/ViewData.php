@@ -34,6 +34,7 @@ class ViewData
          $moduloModel = new Models\ModuloModel();
          $usuarioModel = new Models\UsuarioModel();
          $institucionModel = new Models\InstitucionModel();
+         $perfilModel = new Models\PerfilModel();
          $tmpModulos = SUPER_ADMIN ? $moduloModel->listarModulos() : $moduloModel->listarModulosxPerfil(array('perfil' => PERFIL));
          $tmpArbolMenu = $menuModel->listarArbolMenu(array('modulo' => MODULO, 'perfil' => PERFIL));
          $this->set('layout_modulos', $tmpModulos);
@@ -44,6 +45,7 @@ class ViewData
          $this->set('COLOR_PRIMARIO', $institucionModel->select('colorpri')->first()['colorpri']);
          $this->set('COLOR_SECUNDARIO', $institucionModel->select('colorsec')->first()['colorsec']);
          $this->set('usuario_photo', $usuarioModel->obtenerFoto());
+         $this->set('usuario_perfil', $perfilModel->find(PERFIL)['nombre']);
       }
       return $this->data;
    }

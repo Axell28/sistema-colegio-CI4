@@ -111,9 +111,9 @@ class UsuarioModel extends Model
             }
             break;
          case 'ALU':
-            $rowdata = $this->db->table('usuario u')->select('e.fotourl, p.sexo')
+            $rowdata = $this->db->table('usuario u')->select('a.fotourl, p.sexo')
                ->join("alumno a", "a.codalu = u.codigo", "LEFT")
-               ->join('persona p', "p.codper = e.codper", "LEFT")
+               ->join('persona p', "p.codper = a.codper", "LEFT")
                ->where(new RawSql("BINARY u.usuario = '" . USUARIO . "'"))->get()->getRowArray();
             $fotoUrl = isset($rowdata['fotourl']) ? $rowdata['fotourl'] : null;
             if (empty($fotoUrl)) {

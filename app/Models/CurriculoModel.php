@@ -127,6 +127,33 @@ class CurriculoModel extends Model
       return $result->getResultArray();
    }
 
+   public function listarCursosCurriculaCombo(array $params)
+   {
+      $query = $this->db->table('curriculo c')
+         ->distinct()
+         ->select(array(
+            "s.salon",
+            "c.curso",
+            "cu.nombre as curnomb"
+         ))
+         ->join("salon s", "s.nivel = c.nivel and s.grado = c.grado", "INNER")
+         ->join("curso cu", "cu.codcur = c.curso", "INNER")
+         ->where('s.anio', $params['anio']);
+      $query->where(new RawSql("NOT EXISTS (SELECT 1 FROM curriculo t1 where t1.anio = c.anio AND t1.nivel = c.nivel AND t1.grado = c.grado AND t1.curpad = c.curso)"));
+      $query->orderBy('s.nivel, s.grado, s.seccion, c.orden');
+
+      if (isset($params['salon'])) {
+         $query->where('s.salon', $params['salon']);
+      }
+
+      $result = $query->get()->getResultArray();
+      $nuevoArray = array();
+      foreach ($result as $value) :
+         $nuevoArray[$value['salon']][] = $value;
+      endforeach;
+      return $nuevoArray;
+   }
+
    public function listarCursosIntranet(array $params)
    {
       $porEngargado = isset($params['codemp']);

@@ -15,7 +15,7 @@
                               <div class="row my-3">
                                    <div class="col-sm">
                                         <label for="mtitulo" class="form-label">Titulo:</label>
-                                        <input type="text" class="form-control" id="mtitulo">
+                                        <input type="text" class="form-control" id="mtitulo" autocomplete="off">
                                    </div>
                               </div>
                               <div class="row my-3">
@@ -23,8 +23,8 @@
                                         <label for="mtipo" class="form-label">Tipo:</label>
                                         <select class="form-select" id="mtipo">
                                              <option value="">-Seleccione-</option>
-                                             <?php foreach (@$listaTiposItems as $key => $val) { ?>
-                                                  <option value="<?= $key ?>"><?= $val ?></option>
+                                             <?php foreach (@$listaTiposItems as $val) { ?>
+                                                  <option value="<?= $val['codigo'] ?>"><?= $val['descripcion'] ?></option>
                                              <?php } ?>
                                         </select>
                                    </div>
@@ -33,6 +33,12 @@
                                    <div class="col-sm">
                                         <label for="mfecpub" class="form-label">Fecha publicación:</label>
                                         <input type="datetime-local" class="form-control" id="mfecpub" value="<?= date('Y-m-d\TH:i:s') ?>">
+                                   </div>
+                              </div>
+                              <div class="row my-3">
+                                   <div class="col-sm">
+                                        <label for="mfecmax" class="form-label">Fecha de cierre:</label>
+                                        <input type="datetime-local" class="form-control" id="mfecmax" value="<?= date('Y-m-d\TH:i:s') ?>" disabled>
                                    </div>
                               </div>
                               <div class="row my-3">
@@ -91,17 +97,24 @@
                } else {
                     $('#btnGuardarItem').prop('disabled', false);
                }
+               if ($(this).val() == 'T') {
+                    $('#mfecmax').prop('disabled', false);
+               } else {
+                    $('#mfecmax').prop('disabled', true);
+               }
           });
 
           $('#btnGuardarItem').click(function(e) {
                e.preventDefault();
                const filesUp = document.getElementById('madjuntos').files;
                const form = new FormData();
+               form.append('action', 'I');
                form.append('grupo', '<?= @$grupo ?>');
                form.append('titulo', $('#mtitulo').val());
                form.append('tipo', $('#mtipo').val());
                form.append('cuerpo', tinyMCE.get('editor').getContent());
-               form.append('fecpub', "");
+               form.append('fecpub', $('#mfecpub').val());
+               form.append('fecmax', $('#mtipo').val() == 'T' ? $('#mfecmax').val() : null);
                form.append('cargoArchivos', filesUp.length > 0 ? 'S' : 'N');
                $.each(filesUp, function(index, value) {
                     form.append('adjuntos[]', value);
@@ -113,6 +126,7 @@
                     contentType: false,
                     processData: false,
                     success: function(response) {
+                         listaAuvGrupoItems('<?= @$grupo  ?>');
                          modalAuvItemsEditorEvent.hide();
                     }
                });

@@ -23,6 +23,20 @@ class AnioPeriodoModel extends Model
           return !empty($query);
      }
 
+     public function listarPeridosCombo($params)
+     {
+          $query = $this->db->table('anio_periodo p')
+               ->select(array(
+                    'p.anio',
+                    'p.periodo',
+                    'dd.descripcion AS periododes'
+               ))->join("datosdet dd", "dd.coddat = '011' AND dd.coddet = p.tipo", "LEFT")
+               ->where("p.anio", $params['anio'])
+               ->orderBy("p.anio DESC, p.periodo ASC");
+          $result = $query->get();
+          return $result->getResultArray();
+     }
+
      public function listarPeridosxAnio($anio)
      {
           $query = $this->db->table('anio_periodo p')
@@ -42,9 +56,15 @@ class AnioPeriodoModel extends Model
                     case when now() between p.fecini and p.fecfin then 'Vigente' 
                          when now() < p.fecfin then 'Bloqueado'
                          else 'Finalizado' 
-                    end as estadodes")
+                    end as estadodes"),
+                    new RawSql("t1.activo AS activo")
                ))
                ->join("datosdet dd", "dd.coddat = '011' AND dd.coddet = p.tipo", "LEFT")
+               ->join(
+                    new RawSql("(SELECT 'S' AS activo, anio, MAX(periodo) AS permax FROM anio_periodo WHERE fecini <= NOW() GROUP BY anio ORDER BY periodo DESC) AS t1"),
+                    "t1 ON t1.anio = p.anio AND t1.permax = p.periodo",
+                    "LEFT"
+               )
                ->where("p.anio", $anio)
                ->orderBy("p.anio DESC, p.periodo ASC");
           $result = $query->get();

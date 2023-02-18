@@ -93,11 +93,11 @@ class PublicacionesController extends BaseController
 
                // guardar archivos
                if ($cargoArchivo && !empty($adjuntos)) {
+                  if (!is_dir($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub)) {
+                     mkdir($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub);
+                  }
                   $cont = 1;
                   foreach ($adjuntos as $archivo) {
-                     if (!is_dir($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub)) {
-                        mkdir($this->pathPublicacion . DIRECTORY_SEPARATOR . $codpub);
-                     }
                      $publicacionFilesModel->insert(array(
                         'codpub'  => $codpub,
                         'orden'   => $cont,

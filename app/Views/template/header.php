@@ -46,11 +46,11 @@
             <?php } ?>
 
          </button>
-         <ul class="dropdown-menu dropdown-menu-end" style="max-width: 200px;">
+         <ul class="dropdown-menu dropdown-menu-end" style="max-width: 180px;">
             <li>
                <div class="px-3 pt-1">
                   <div class="text-truncate text-primary mb-1 text-uppercase"><?= USUARIO ?></div>
-                  <div class="text-truncate" style="font-size: calc(var(--font-size) - .5px);">Administrador del sistema</div>
+                  <div class="text-truncate" style="font-size: calc(var(--font-size) - .5px);"><?= esc($usuario_perfil) ?></div>
                </div>
             </li>
             <li>
