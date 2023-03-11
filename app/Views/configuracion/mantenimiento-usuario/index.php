@@ -146,6 +146,33 @@
       return true;
    }
 
+   function editarUsuario(index) {
+      let rowdata = $(jqxgridUsuarios).jqxGrid('getrowdata', index);
+      $.ajax({
+         type: "POST",
+         url: "<?= MODULO_URL ?>/mantenimiento-usuario/usuario",
+         data: {
+            action: 'E',
+            usuario: rowdata.usuario,
+            nombre: rowdata.nombre,
+            perfil: rowdata.perfil,
+            estado: rowdata.estado
+         },
+         beforeSend: function() {
+            $('#modalUsuario .modal-dialog').html(getLoadingModal());
+            modalUsuarioEvent.show();
+         },
+         success: function(response) {
+            $('#modalUsuario .modal-dialog').html(response);
+         },
+         error: function(jqXHr, status, error) {
+            if (jqXHr.statusText) {
+               showAlertSweet(jqXHr.statusText, 'error');
+            }
+         }
+      });
+   }
+
    function totalRegistros() {
       const info = $(jqxgridUsuarios).jqxGrid('getdatainformation');
       $('#totalReg').html(`Total de Usuarios : &nbsp; ` + (info.rowscount > 10 ? info.rowscount : ('0' + info.rowscount)));
@@ -197,7 +224,7 @@
                datafield: "ultcon",
                cellsalign: 'center',
                align: 'center',
-               width: "16%",
+               width: "14%",
                editable: false,
                filterable: false,
             },
@@ -206,10 +233,18 @@
                datafield: 'estado_bool',
                editable: false,
                align: 'center',
-               width: "8%",
+               width: "6%",
                filterable: false,
                editable: true,
                columntype: 'checkbox'
+            },
+            {
+               text: '',
+               width: '4%',
+               filterable: false,
+               cellsrenderer: function(row, column, value) {
+                  return `<div class="jqx-center-align"><button class="btn btn-link text-success" onclick="editarUsuario(${row})" title="Ficha matrícula"><i class="fas fa-user-edit"></i></button></div>`;
+               }
             },
          ]
       });

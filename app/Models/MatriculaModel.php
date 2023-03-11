@@ -129,6 +129,10 @@ class MatriculaModel extends Model
          return $result->getRowArray();
       }
 
+      if (isset($params['anio'])) {
+         $query->where('s.anio', $params['anio']);
+      }
+
       if (isset($params['codalu'])) {
          $query->where('m.codalu', $params['codalu']);
       }
@@ -142,6 +146,27 @@ class MatriculaModel extends Model
          $nuevoResult = $result;
       }
       return $nuevoResult;
+   }
+
+   public function verificarMatriculaNG(array $params)
+   {
+      $query = $this->db->table('matricula m')
+         ->select("1")
+         ->join("salon s", "s.salon = m.salon", "INNER")
+         ->where(array(
+            'codalu' => $params['codalu'],
+            'nivel'  => $params['nivel'],
+            'grado'  => $params['grado']
+         ));
+      return $query->get()->getRowArray();
+   }
+
+   public function eliminarMatricula($codmatricula)
+   {
+      $auvRespNotaModel = new AuvRespNotaModel();
+      $datosMatricula = $this->select('salon')->find($codmatricula);
+      $this->delete($codmatricula);
+      $auvRespNotaModel->eliminarRespuesta($datosMatricula['salon'], $datosMatricula['alucod']);
    }
 
    public function generarCodigo($anio)

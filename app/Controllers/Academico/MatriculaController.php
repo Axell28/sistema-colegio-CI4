@@ -95,10 +95,22 @@ class MatriculaController extends BaseController
                   'condicion' => $this->request->getPost('condicion')
                );
 
+               $existeMatricula = $this->matriculaModel->verificarMatriculaNG(array('nivel' => $nivel, 'grado' => $grado, 'codalu' => $values['codalu']));
+
+               if (!empty($existeMatricula)) {
+                  throw new \Exception("Error! Existe registros de matricula de este estudiante con el mismo nivel y grado");
+               }
+
                $codMatricula = $this->matriculaModel->registrarMatricula($values);
 
                $jsonData->set('codmat', $codMatricula);
                $jsonData->set('listaAlumnosNoMatriculados', $alumnoModel->listarAlumnosNoMatriculados());
+               break;
+            case 'eliminar':
+               $codmat = $this->request->getPost('codmat');
+               $codalu = $this->request->getPost('codalu');
+               $this->matriculaModel->eliminarMatricula($codmat);
+               $alumnoModel->set('matricula', null)->update($codalu);
                break;
          endswitch;
          return $this->response->setJSON($jsonData->get())->setStatusCode(200);

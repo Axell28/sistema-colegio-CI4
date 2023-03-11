@@ -59,16 +59,17 @@
                </select>
             </div>
          </div>
+         <!--
          <div class="mb-3 row">
             <label for="cmbTipCalif" class="col-sm-2 col-form-label">Tipo calif:</label>
             <div class="col-sm-10">
                <select class="form-select" id="cmbTipCalif" required>
                   <option value="">-Seleccione-</option>
-                  <option value="L" <?= isset($curricula->tipcal) ? ($curricula->tipcal == 'L' ? 'selected' : '') : '' ?>>Letra</option>
-                  <option value="N" <?= isset($curricula->tipcal) ? ($curricula->tipcal == 'N' ? 'selected' : '') : '' ?>>Núméro</option>
+                  <option value="L" <?= ''; //isset($curricula->tipcal) ? ($curricula->tipcal == 'L' ? 'selected' : '') : '' ?>>Letra</option>
+                  <option value="N" <?= ''; //isset($curricula->tipcal) ? ($curricula->tipcal == 'N' ? 'selected' : '') : '' ?>>Núméro</option>
                </select>
             </div>
-         </div>
+         </div> -->
          <div class="mb-3 row">
             <label for="txthoras" class="col-sm-2 col-form-label">Horas:</label>
             <div class="col-sm-2">

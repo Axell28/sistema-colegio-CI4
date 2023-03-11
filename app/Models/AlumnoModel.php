@@ -70,7 +70,11 @@ class AlumnoModel extends Model
          $query->where('a.nivel', $params['nivel']);
       }
 
-      $query->orderBy('p.apepat, p.apemat');
+      if (isset($params['matricula']) && !empty($params['matricula'])) {
+         $query->where("COALESCE(a.matricula, 'N')", $params['matricula']);
+      }
+
+      $query->orderBy('a.nivel, a.grado, a.seccion, p.apepat, p.apemat');
       $result = $query->get();
       return $result->getResultArray();
    }

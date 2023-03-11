@@ -9,6 +9,7 @@ class ReporteDeUsuarios
 
    private $fpdf;
    public $wt = 276;
+   public $ht = 188;
 
    public function __construct()
    {
@@ -20,7 +21,7 @@ class ReporteDeUsuarios
    {
       $this->fpdf->AddPage();
       $this->fpdf->SetMargins(10, 10, 10);
-      $this->fpdf->SetAutoPageBreak(10);
+      $this->fpdf->SetAutoPageBreak(15);
       $this->fpdf->SetFillColor(245, 245, 245);
 
       $pivotUsuarios = $this->pivotListadoUsuarios($params);
@@ -48,14 +49,25 @@ class ReporteDeUsuarios
       $this->fpdf->Cell(74, $h, "NOMBRE", 1, 0, 'C', true);
       $this->fpdf->Cell(64, $h, "PERFIL", 1, 0, 'C', true);
       $this->fpdf->Cell(40, $h, "FEC. REGISTRO", 1, 0, 'C', true);
-      $this->fpdf->Cell(40, $h, utf8_decode("ULTIMA CONEXIÓN"), 1, 0, 'C', true);
+      $this->fpdf->Cell(40, $h, $this->convert_to_utf8("ULTIMA CONEXIÓN"), 1, 0, 'C', true);
       $this->fpdf->Cell(24, $h, "ESTADO", 1, 1, 'C', true);
       $this->fpdf->SetFont('Arial', '', 7);
 
       foreach ($pivotUsuarios as $value) {
+         if ($this->fpdf->GetY() > $this->ht + 10) {
+            $this->fpdf->AddPage();
+            $this->fpdf->SetFont('Arial', 'B', 7);
+            $this->fpdf->Cell(34, $h, "USUARIO", 1, 0, 'C', true);
+            $this->fpdf->Cell(74, $h, "NOMBRE", 1, 0, 'C', true);
+            $this->fpdf->Cell(64, $h, "PERFIL", 1, 0, 'C', true);
+            $this->fpdf->Cell(40, $h, "FEC. REGISTRO", 1, 0, 'C', true);
+            $this->fpdf->Cell(40, $h, $this->convert_to_utf8("ULTIMA CONEXIÓN"), 1, 0, 'C', true);
+            $this->fpdf->Cell(24, $h, "ESTADO", 1, 1, 'C', true);
+            $this->fpdf->SetFont('Arial', '', 7);
+         }
          $this->fpdf->Cell(34, $h, "  " . $value['usuario'], 1, 0, 'C');
-         $this->fpdf->Cell(74, $h, "  " . $value['nombre'], 1, 0, 'L');
-         $this->fpdf->Cell(64, $h, "  " . utf8_decode($value['perfil_nomb']), 1, 0, 'L');
+         $this->fpdf->Cell(74, $h, "  " . $this->convert_to_utf8($value['nombre']), 1, 0, 'L');
+         $this->fpdf->Cell(64, $h, "  " . $this->convert_to_utf8($value['perfil_nomb']), 1, 0, 'L');
          $this->fpdf->Cell(40, $h, "  " . $value['fecreg'], 1, 0, 'C');
          $this->fpdf->Cell(40, $h, "  " . $value['ultcon'], 1, 0, 'C');
          $this->fpdf->Cell(24, $h, "  " . $value['estado_des'], 1, 1, 'C');
@@ -72,5 +84,11 @@ class ReporteDeUsuarios
          'estado' => $params['estado'],
          'perfil' => $params['perfil']
       ));
+   }
+
+   private function convert_to_utf8($cadena)
+   {
+      if (empty($cadena)) return "";
+      return iconv('UTF-8', 'windows-1252', $cadena);
    }
 }

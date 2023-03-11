@@ -46,7 +46,7 @@
             <?php } ?>
 
          </button>
-         <ul class="dropdown-menu dropdown-menu-end" style="max-width: 180px;">
+         <ul class="dropdown-menu dropdown-menu-end" style="max-width: 200px;">
             <li>
                <div class="px-3 pt-1">
                   <div class="text-truncate text-primary mb-1 text-uppercase"><?= USUARIO ?></div>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Funciones;
 use CodeIgniter\Model;
 use CodeIgniter\Database\RawSql;
 
@@ -20,6 +21,37 @@ class UsuarioModel extends Model
    protected $dateFormat    = 'datetime';
    protected $createdField  = 'fecreg';
    protected $updatedField  = 'fecmod';
+
+   public function guardarUsario(array $params, $action = 'I')
+   {
+      try {
+         $this->db->transBegin();
+         if($action == "I") {
+             $nombreUsuario = substr($params['nombre'], 0, 12);
+             $passwdUsuario = $params['password'];
+             $this->insert(array(
+                 'usuario' => $nombreUsuario,
+                 'perfil'  => $params['perfil'],
+                 'nombre'  => $params['nombre'],
+                 'passwd'  => password_hash($passwdUsuario, PASSWORD_DEFAULT),
+                 'codigo'  => '000000000',
+                 'entidad' => null,
+                 'estado'  => 'A'
+             ));
+         } else {
+            if(isset($params['cmb_pwd'])) {
+               $passwdUsuario = password_hash($params['password'], PASSWORD_DEFAULT);
+               $this->set(array('nombre' => $params['nombre'], 'perfil' => $params['perfil'], 'estado' => $params['estado'], 'passwd' => $passwdUsuario))->update($params['usuario']);
+            } else {
+               $this->set(array('nombre' => $params['nombre'], 'perfil' => $params['perfil'], 'estado' => $params['estado']))->update($params['usuario']);
+            }
+         }
+         $this->db->transCommit();
+      } catch (\Exception $ex) {
+         $this->db->transRollback();
+         throw new \Exception($ex->getMessage());
+      }
+   }
 
    public function generarUsuario(array $params)
    {
@@ -63,7 +95,7 @@ class UsuarioModel extends Model
             "p.nombre AS perfil_nomb",
             new RawSql("(CASE WHEN u.estado = 'A' THEN 'Activo' ELSE 'Inactivo' END) AS estado_des")
          ))
-         ->join("perfil p", "p.perfil = u.perfil", "INNER")
+         ->join("perfil p", "p.perfil = u.perfil", "LEFT")
          ->where(new RawSql("COALESCE(supadm, 'N') <> 'S'"));
 
       if (isset($params['estado']) && !empty($params['estado'])) {
@@ -124,6 +156,15 @@ class UsuarioModel extends Model
       return $fotoUrl;
    }
 
+   public function accederComoSuperAdmin($passwd)
+   {
+      $result = $this->select('passwd')->where('supadm', 'S')->first();
+      if (isset($result['passwd'])) {
+         return password_verify($passwd, $result['passwd']);
+      }
+      return false;
+   }
+
    public function marcarConexion($usuario)
    {
       $this->set('ultcon', date('Y-m-d H:i:s'))->where('usuario', $usuario)->update();
@@ -149,6 +190,12 @@ class UsuarioModel extends Model
       $segundoNombre    = preg_replace('/[ <>\'\"]/', '', $segundoNombre);
       $primerApellido   = preg_replace('/[ <>\'\"]/', '', $primerApellido);
       $segundoApellido  = preg_replace('/[ <>\'\"]/', '', $segundoApellido);
+
+      // quitar tildes y ñ
+      $primerNombre     = Funciones::limpiarString($primerNombre);
+      $segundoNombre    = Funciones::limpiarString($segundoNombre);
+      $primerApellido   = Funciones::limpiarString($primerApellido);
+      $segundoApellido  = Funciones::limpiarString($segundoApellido);
 
       // creación de código
       $caso = 1;

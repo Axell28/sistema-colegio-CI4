@@ -119,6 +119,24 @@ class MantenimientoEmpleadoController extends BaseController
                }
                $this->empleadoModel->set('fotourl', null)->update($codemp);
                break;
+            case 'activar-usuario':
+               $usuarioModel = new Models\UsuarioModel();
+               $datosAcceso = $usuarioModel->generarUsuario(array(
+                  'perfil'    => $this->request->getPost('perfil'),
+                  'apellidos' => $this->request->getPost('apellidos'),
+                  'nombres'   => $this->request->getPost('nombres'),
+                  'nomcomp'   => $this->request->getPost('nomcomp'),
+                  'codigo'    => $this->request->getPost('codigo'),
+                  'entidad'   => 'EMP'
+               ));
+               $jsonData->set('usuario', $datosAcceso['usuario']);
+               $jsonData->set('password', $datosAcceso['password']);
+               $this->enviarEmailActivacion(array(
+                  'nombre' => $this->request->getPost('nombre'),
+                  'usuario' => $datosAcceso['usuario'],
+                  'passwd'  => $datosAcceso['password']
+               ));
+               break;
          endswitch;
          $jsonData->set('listaEmpleados', $this->empleadoModel->listarEmpleados(array(
             'estado' => $filestado,
@@ -128,6 +146,26 @@ class MantenimientoEmpleadoController extends BaseController
       } catch (\Exception $ex) {
          $jsonData->set('message', $ex->getMessage());
          return $this->response->setJSON($jsonData->get())->setStatusCode(401);
+      }
+   }
+
+   public function enviarEmailActivacion(array $params)
+   {
+      try {
+         $email = \Config\Services::email();
+         $email->setFrom('test_email@test.com', 'Plataforma Educativa');
+         $email->setTo('axel18virgo@gmail.com');
+         $email->setSubject('ACCESO A PLATAFORMA');
+         $email->setMessage('
+         <h3>Hola, ' . $params['nombre'] . '</h3>
+         <p>Tu cuenta de usuario ha sido activado para el ingreso a la plataforma.</p>
+         <p><b>Usuario:</b> &nbsp;&nbsp; ' . $params['usuario'] . '</p>
+         <p><b>Contraseña :</b> &nbsp;&nbsp; ' . $params['passwd'] . '</p>
+         <p>
+         <p>Ingreso a la plaforma en este <a href="' . base_url('auth/login') . '" target="_blank">enlace</a></p>
+      ');
+         $email->send();
+      } catch (\Exception $ex) {
       }
    }
 }

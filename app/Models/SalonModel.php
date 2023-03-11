@@ -47,10 +47,16 @@ class SalonModel extends Model
 
    public function listarSalonesComboBox(array $params)
    {
-      $query = $this->db->table('salon s')->select('salon, anio, nombre');
+      $query = $this->db->table('salon s')->select('s.salon, s.anio, s.nombre');
 
       if (isset($params['anio']) && !empty($params['anio'])) {
          $query->where('s.anio', $params['anio']);
+      }
+
+      if (isset($params['codemp']) && !SUPER_ADMIN) {
+         $query->join("asignacion_curso ac", "ac.salon = s.salon", "INNER");
+         $query->where('ac.codemp', $params['codemp']);
+         $query->groupBy('s.salon');
       }
 
       $query->orderBy('s.nivel, s.grado, s.seccion');

@@ -56,6 +56,10 @@ class CurriculoModel extends Model
          }
       }
 
+      if (isset($params['sin_area'])) {
+         $query->where(new RawSql("NOT EXISTS (SELECT 1 FROM curriculo t1 where t1.anio = c.anio AND t1.nivel = c.nivel AND t1.grado = c.grado AND t1.curpad = c.curso)"));
+      }
+
       $query->orderBy('c.orden, COALESCE(c.curpad, curso)');
       $result = $query->get();
       return $result->getResultArray();
@@ -144,6 +148,11 @@ class CurriculoModel extends Model
 
       if (isset($params['salon'])) {
          $query->where('s.salon', $params['salon']);
+      }
+
+      if (isset($params['codemp']) && !SUPER_ADMIN) {
+         $query->join("asignacion_curso ac", "ac.salon = s.salon AND ac.codcur = cu.codcur", "INNER");
+         $query->where('ac.codemp', $params['codemp']);
       }
 
       $result = $query->get()->getResultArray();

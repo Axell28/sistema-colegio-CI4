@@ -74,7 +74,7 @@ body {
 
 .jqx-fill-state-pressed {
    color: #07070e;
-   background-color: #ebf7ff9f;
+   background-color: #DFF9EE;
 }
 
 /* end jqwidget */
@@ -305,7 +305,7 @@ div.card-main {
    }
 
    .menu.close div.logo-menu img {
-      height: 125px;
+      height: 90px;
    }
 
    .menu.close .links_name {

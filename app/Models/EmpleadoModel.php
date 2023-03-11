@@ -33,7 +33,8 @@ class EmpleadoModel extends Model
             new RawSql("TRIM(SUBSTR(p.ubgdir, 1, 2)) AS dept"),
             new RawSql("TRIM(SUBSTR(p.ubgdir, 1, 4)) AS prov"),
             new RawSql("(CASE WHEN e.estado = 'A' THEN 'Activo' ELSE 'Inactivo' END) AS estado_des"),
-            new RawSql("(SELECT descripcion FROM datosdet WHERE coddat = '004' AND coddet = e.area) AS area_des")
+            new RawSql("(SELECT descripcion FROM datosdet WHERE coddat = '004' AND coddet = e.area) AS area_des"),
+            new RawSql("(CASE WHEN COALESCE(u.usuario, '') = '' THEN 'N' ELSE 'S' END) AS tiene_usuario")
          ))
          ->join('persona p', 'p.codper = e.codper', 'INNER')
          ->join('usuario u', 'u.codigo = e.codemp', 'LEFT')
@@ -77,7 +78,6 @@ class EmpleadoModel extends Model
       try {
          $codemp = $params['codemp'];
          $codper = $params['codper'];
-         $usuarioModel = new UsuarioModel();
          $personaModel = new PersonaModel();
          $valuesPer = array(
             'nombres'  => trim($params['nombres']),
@@ -118,15 +118,6 @@ class EmpleadoModel extends Model
                'usureg'  => USUARIO
             );
             $this->insert($valuesEmp);
-            $usuarioModel->insert(array(
-               'usuario' => $usuarioModel->generarCodigoUsuario($params['apepat'] . " " . $params['apemat'], $params['nombres']),
-               'perfil' => $params['perfil'],
-               'nombre' => mb_strtoupper(trim($params['apepat']), 'UTF-8') . " " . mb_strtoupper(trim($params['apemat']), 'UTF-8') .  ", " .  trim($params['nombres']),
-               'passwd' => password_hash("12345", PASSWORD_DEFAULT),
-               'codigo' => $codemp,
-               'entidad' => 'EMP',
-               'estado' => 'I'
-            ));
          } else if ($action == 'E') {
             $valuesEmp = array(
                'fecing'  => !empty($params['fecing']) ? $params['fecing'] : null,

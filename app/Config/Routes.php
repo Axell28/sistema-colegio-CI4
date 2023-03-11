@@ -114,6 +114,10 @@ $routes->group('intranet', ['namespace' => 'App\Controllers\Intranet', 'filter' 
     $routes->get('aula-virtual', 'AulaVirtualController::index');
     $routes->get('documentos', 'DocumentosController::index');
 
+    $routes->group('reporte', ['namespace' => 'App\Controllers\Academico'], static function ($routes) {
+        $routes->post('generate', 'ReporteController::generate');
+    });
+
     $routes->group('publicaciones', static function ($routes) {
         $routes->get('', 'PublicacionesController::index');
         $routes->get('editor', 'PublicacionesController::editor');
@@ -128,7 +132,7 @@ $routes->group('intranet', ['namespace' => 'App\Controllers\Intranet', 'filter' 
 
     $routes->group('cursos', static function ($routes) {
         $routes->get('', 'CursosController::index');
-        $routes->get('enviados/(:alphanum)', 'CursosController::enviados/$1');
+        $routes->get('enviados/(:alphanum)/(:alphanum)', 'CursosController::enviados/$1/$2');
         $routes->post('auv-grupo', 'CursosController::auvgrupo');
         $routes->post('respuesta', 'CursosController::respuesta');
         $routes->post('auv-grupo-items', 'CursosController::auvGrupoItems');

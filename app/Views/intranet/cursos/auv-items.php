@@ -5,10 +5,26 @@
 <?php } ?>
 
 <?php foreach (@$listaItemsPub as $value) {
-     $color = $value['tipo'] == 'A' ? 'success' : ($value['tipo'] == 'T' ? 'danger' : 'primary');
+     $color = "secondary";
+     switch ($value['tipo']) {
+          case 'S':
+               $color = 'success';
+               break;
+          case 'T':
+               $color = 'warning';
+               break;
+          case 'E':
+               $color = 'info';
+               break;
+          default:
+               $color = 'danger';
+               break;
+     }
+     $dt_fecpub = new \DateTime($value['fecpub']);
+     $dt_fecmax = !empty($value['fecmax']) ? new \DateTime($value['fecmax']) : new \DateTime();
 ?>
-     <div class="card border-<?= $color ?> mb-3 text-start" id="card-item-" <?= $value['codigo'] ?>>
-          <div class="card-header text-<?= $color ?> border-<?= $color ?>" style="background: transparent;">
+     <div class="card bg-white border-<?= $color ?> mb-4 text-start" id="card-item-" <?= $value['codigo'] ?>>
+          <div class="card-header text-white border-<?= $color ?> bg-<?= $color ?>">
                <div class="d-flex">
                     <div class="me-2" style="font-size: 14px;"><i class="fas fa-book"></i></div>
                     <div class="text-truncate" style="font-size: 14px;">
@@ -39,51 +55,55 @@
           <div class="card-footer border-<?= $color ?>" style="background: transparent;">
                <div>
                     <i class="far fa-calendar-alt"></i>
-                    <span>&nbsp;Publicado el <?= date('d M, Y h:i A', strtotime($value['fecpub'])) ?></span>
+                    <span>&nbsp;Publicado desde: <?= date('d \d\e M \d\e\l Y, h:i A', $dt_fecpub->getTimestamp()) ?></span>
                </div>
-               <div class="mt-2">
-                    <i class="far fa-calendar-exclamation"></i>
-                    <span>&nbsp;Fecha max. para responder: <?= date('d M, Y h:i A', strtotime($value['fecmax'])) ?> </span>
-               </div>
-          </div>
-          <div class="card-footer border-<?= $color ?>" style="background: transparent;">
-               <?php if ((@$esDocente || @$esAdmin) && $value['tipo'] == 'T') { ?>
-                    <a href="<?= MODULO_URL ?>/cursos/enviados/<?= $value['codigo'] ?>" class="btn btn-danger w-100">
-                         <i class="fas fa-clipboard-check"></i>
-                         <span>&nbsp;Revisar enviós</span>
-                    </a>
+               <?php if ($value['evaluar'] == 'S') { ?>
+                    <div class="mt-2">
+                         <i class="far fa-calendar-exclamation"></i>
+                         <span>&nbsp;Cierre de evaluación : <?= date('d \d\e M \d\e\l Y, h:i A', $dt_fecmax->getTimestamp()) ?> </span>
+                    </div>
                <?php } ?>
-               <?php if (@$esAlumno && $value['tipo'] == 'T') { ?>
-
-                    <?php if (!empty($value['respuesta'])) { ?>
-
-                         <div class="alert alert-success d-flex align-items-center justify-content-center gap-2 mb-0">
-                              <i class="fas fa-smile fs-3"></i>
-                              <span>Tarea entregada el <span class="alert-link"><?= date('d M, Y h:i A', strtotime($value['respuesta'][0]['fecenv'])) ?></span></span>
-                         </div>
-
-                    <?php } else { ?>
-
-                         <?php if ($value['fecha_vencidad'] == 'S') { ?>
-                              <div class="alert alert-warning d-flex align-items-center justify-content-center gap-2 mb-0">
-                                   <i class="fas fa-frown-open fs-3"></i>
-                                   <span>Tarea no fue entregada a tiempo.</span>
-                              </div>
-                         <?php } else { ?>
-                              <button class="btn btn-outline-dark w-100 btn-send" codigo="<?= $value['codigo'] ?>">
-                                   <i class="fas fa-share-alt"></i>
-                                   <span>&nbsp; Enviar tarea</span>
-                              </button>
-                         <?php } ?>
-
+          </div>
+          <?php if ($value['evaluar'] == 'S') { ?>
+               <div class="card-footer border-<?= $color ?>" style="background: transparent;">
+                    <?php if ((@$esDocente || @$esAdmin)) { ?>
+                         <a href="<?= MODULO_URL ?>/cursos/enviados/<?= esc($salon) ?>/<?= $value['codigo'] ?>" class="btn btn-outline-<?= $color ?> w-100">
+                              <i class="fas fa-clipboard-check"></i>
+                              <span>&nbsp;Revisar enviós</span>
+                         </a>
                     <?php } ?>
-               <?php } ?>
-          </div>
+                    <?php if (@$esAlumno) { ?>
+
+                         <?php if (!empty($value['respuesta'])) { ?>
+
+                              <div class="alert alert-success d-flex align-items-center justify-content-center gap-2 mb-0">
+                                   <i class="fas fa-smile fs-3"></i>
+                                   <span><?= $value['tipo'] == 'T' ? 'Actividad' : ($value['tipo'] == 'E' ? 'Evaluación' : 'Tarea') ?> entregada el <span class="alert-link">&nbsp;<?= $value['respuesta']['fecenv_format'] ?></span></span>
+                              </div>
+
+                         <?php } else { ?>
+
+                              <?php if ($value['fecha_vencidad'] == 'S') { ?>
+                                   <div class="alert alert-warning d-flex align-items-center justify-content-center gap-2 mb-0">
+                                        <i class="fas fa-frown-open fs-3"></i>
+                                        <span>Tarea no fue entregada a tiempo.</span>
+                                   </div>
+                              <?php } else { ?>
+                                   <button class="btn btn-outline-<?= $color ?> w-100 btn-send" codigo="<?= $value['codigo'] ?>">
+                                        <i class="fas fa-share-alt"></i>
+                                        <span>&nbsp; <?= $value['tipo'] == 'T' ? 'Enviar actividad' : ($value['tipo'] == 'E' ? 'Enviar examen' : 'Enviar tarea') ?></span>
+                                   </button>
+                              <?php } ?>
+
+                         <?php } ?>
+                    <?php } ?>
+               </div>
+          <?php } ?>
      </div>
 <?php } ?>
 
-<div class="modal fade" id="modalRespuesta" tabindex="-1" aria-hidden="true">
-     <div class="modal-dialog modal-dialog-centered"></div>
+<div class="modal fade" id="modalRespuesta" tabindex="-1" role="dialog" aria-hidden="true">
+     <div class="modal-dialog modal-dialog-centered" role="document"></div>
 </div>
 
 <!-- TEST MBARDALES WhAI&WQfPB -->
@@ -95,21 +115,26 @@
                     type: "POST",
                     url: "<?= MODULO_URL ?>/cursos/json/eliminar-item",
                     data: {
+                         grupo: '<?= @$grupo ?>',
                          item: codigo
                     },
                     success: function(response) {
                          $('#card-item-' + codigo).remove();
                          listaAuvGrupoItems('<?= @$grupo ?>');
+                    },
+                    error: function(jqXHR, status, error) {
+                         let message = error;
+                         if (jqXHR.responseJSON) {
+                              message = jqXHR.responseJSON.message;
+                         }
+                         showAlertSweet(message, 'error');
                     }
                });
           }
      };
      (function() {
           const modalRespuesta = document.getElementById('modalRespuesta');
-          const modalRespuestaEvent = new bootstrap.Modal(modalRespuesta, {
-               keyboard: false,
-               backdrop: 'static'
-          });
+          const modalRespuestaEvent = new bootstrap.Modal(modalRespuesta);
           modalRespuesta.addEventListener('hidden.bs.modal', event => {
                $('#modalRespuesta .modal-dialog').html('');
           });
@@ -122,7 +147,8 @@
                     url: "<?= MODULO_URL ?>/cursos/respuesta",
                     data: {
                          auvitem: codigo,
-                         grupo: grupo
+                         grupo: grupo,
+                         salon: '<?= @$salon ?>'
                     },
                     success: function(response) {
                          $('#modalRespuesta .modal-dialog').html(response);
@@ -131,4 +157,10 @@
                });
           });
      })();
+
+     document.addEventListener('focusin', function(e) {
+          if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+               e.stopImmediatePropagation();
+          }
+     });
 </script>

@@ -37,6 +37,7 @@ class CursosController extends BaseController
       $curriculoModel = new Models\CurriculoModel();
       $matriculaModel = new Models\MatriculaModel();
       $params = array('anio' => ANIO);
+      $listaCursosIntranet = array();
       if (!SUPER_ADMIN) {
          if ($this->esDocente) {
             $params['codemp'] = CODIGO;
@@ -45,17 +46,32 @@ class CursosController extends BaseController
                'anio' => $this->anio,
                'codalu' => CODIGO
             ));
-            $params['salon'] = $datosMatricula['salon'];
+            if(!empty($datosMatricula)) {
+               $params['salon'] = $datosMatricula['salon'];
+               $listaCursosIntranet = $curriculoModel->listarCursosIntranet($params);
+            }
          }
+      } else {
+         $listaCursosIntranet = $curriculoModel->listarCursosIntranet($params);
       }
       $viewData->set('esAlumno', $this->esAlumno);
-      $viewData->set('listaCursosIntranet', $curriculoModel->listarCursosIntranet($params));
+      $viewData->set('listaCursosIntranet', $listaCursosIntranet);
       return view('intranet/cursos/index', $viewData->get());
    }
 
-   public function enviados($codigo = null)
+   public function enviados($salon, $codigo = null)
    {
       $viewData = new ViewData();
+      $auvGrupoItemModel = new Models\AuvGrupoItemModel();
+      $auvRespNotaModel = new Models\AuvRespNotaModel();
+      $salonModel = new Models\SalonModel();
+      $datosSalon = $salonModel->obtenerDatosSalon($salon);
+      $datosItemAuv = $auvGrupoItemModel->obtenerDatosItem($codigo);
+      $listaRespuestas = $auvRespNotaModel->listarRespuestasxSalon(array('salon' => $salon, 'coditem' => $codigo));
+      $viewData->set('coditem', $codigo);
+      $viewData->set('listaRespuestas', $listaRespuestas);
+      $viewData->set('salonNombre', $datosSalon['nombre']);
+      $viewData->set('datosItemAuv', $datosItemAuv);
       return view('intranet/cursos/enviados', $viewData->get());
    }
 
@@ -63,6 +79,7 @@ class CursosController extends BaseController
    {
       $viewData = new ViewData();
       $viewData->isAjax(true);
+      $viewData->set('salon', $this->request->getPost('salon'));
       $viewData->set('grupo', $this->request->getPost('grupo'));
       $viewData->set('auvitem', $this->request->getPost('auvitem'));
       return view('intranet/cursos/respuesta', $viewData->get());
@@ -123,6 +140,7 @@ class CursosController extends BaseController
       $viewData->set('esAdmin', $this->esAdmin);
       $viewData->set('esAlumno', $this->esAlumno);
       $viewData->set('grupo', $grupo);
+      $viewData->set('salon', $this->request->getPost('salon'));
       if ($this->esAlumno) {
          $viewData->set('listaItemsPub', $auvGrupoItemModel->listarItems(['grupo' => $grupo, 'codalu' => CODIGO]));
       } else {
@@ -131,12 +149,12 @@ class CursosController extends BaseController
       return view('intranet/cursos/auv-items', $viewData->get());
    }
 
-   public function auvEditor($codigo = null)
+   public function auvEditor()
    {
       $viewData = new ViewData();
       $viewData->isAjax(true);
       $datosDet = new Models\DatosModel();
-      $viewData->set('listaTiposItems', $datosDet->listarDatos('014'));
+      $viewData->set('listaTiposItems', $datosDet->listarDatos('014', true));
       $viewData->set('grupo', $this->request->getPost('grupo'));
       $viewData->set('action', $this->request->getPost('action'));
       return view('intranet/cursos/auv-editor', $viewData->get());
@@ -146,6 +164,7 @@ class CursosController extends BaseController
    {
       $jsonData = new JsonData();
       $AuvGrupoModel = new Models\AuvGrupoModel();
+      $auvRespNotaModel = new Models\AuvRespNotaModel();
       try {
          switch ($caso):
             case 'save-grupo':
@@ -167,7 +186,7 @@ class CursosController extends BaseController
                )));
                break;
             case 'eliminar-grupo':
-               $codigo = $this->request->getGet('codigo');
+               $codigo = $this->request->getPost('codigo');
                $AuvGrupoModel->where(array('codigo' => intval($codigo)))->delete();
                if (is_dir($this->pathAdjuntosGrupo . DIRECTORY_SEPARATOR . $codigo)) {
                   Funciones::eliminarDirectorio($this->pathAdjuntosGrupo . DIRECTORY_SEPARATOR . $codigo);
@@ -220,29 +239,58 @@ class CursosController extends BaseController
                $auvRespAdjModel = new Models\AuvRespAdjModel();
                $grupo = $this->request->getPost('grupo');
                $item = $this->request->getPost('item');
+               if (!$auvRespNotaModel->existeRegistros($item)) {
+                  throw new \Exception("No se puede eliminar por que hay soluciones subidas por los estudiantes.");
+               }
                $auvGrupoItemModel->where('codigo', $item)->delete();
-               $auvRespAdjModel->where(array('cgitem' => $item))->delete();
+               $auvRespAdjModel->where('coditem', $item)->delete();
+               Funciones::eliminarArchivosxItemAuv($this->pathAdjuntosGrupo . DIRECTORY_SEPARATOR . $grupo, $item);
                break;
             case 'enviar-resp':
+               $auvRespNotaModel = new Models\AuvRespNotaModel();
                $auvRespAdjModel = new Models\AuvRespAdjModel();
-               $archivo = $this->request->getFile('archivo');
+               $adjuntos = $this->request->getFileMultiple('adjuntos');
                $grupo = $this->request->getPost('grupo');
+               $salon = $this->request->getPost('salon');
                $coditem = $this->request->getPost('auvitem');
                if (!is_dir($this->pathRespuestaAdjunto  . DIRECTORY_SEPARATOR . $grupo)) {
                   mkdir($this->pathRespuestaAdjunto . DIRECTORY_SEPARATOR . $grupo);
                }
-               $nombreAdjunto = sprintf("%s.%s", "E_" . $coditem . "_1", $archivo->guessExtension());
-               $auvRespAdjModel->insert(array(
-                  'cgitem' => $coditem,
-                  'codalu' => CODIGO,
-                  'orden'  => 1,
-                  'comentalu' => $this->request->getPost('comentario'),
-                  'nombre'    => $archivo->getClientName(),
-                  'tamanio'   => $archivo->getSizeByUnit(),
-                  'fecenv' => date('Y-m-d H:i:s'),
-                  'ruta'   => "/uploads/auv/respuesta/{$grupo}/" . $nombreAdjunto
-               ));
-               $archivo->move($this->pathRespuestaAdjunto . DIRECTORY_SEPARATOR . $grupo, $nombreAdjunto, true);
+               $comentario = $this->request->getPost('comentario');
+               $auvRespNotaModel->set(array('fecenv' => date('Y-m-d H:i:s'), 'comentalu' => $comentario))
+                  ->where(array('coditem' => $coditem, 'codalu' => CODIGO))->update();
+               if (!empty($adjuntos)) {
+                  $orden = 1;
+                  foreach ($adjuntos as $archivo) {
+                     $nombreAdjunto = sprintf("%s.%s", "R_" . $coditem . "_" . $orden, $archivo->guessExtension());
+                     $auvRespAdjModel->insert(array(
+                        'coditem'   => $coditem,
+                        'codalu'    => CODIGO,
+                        'salon'     => $salon,
+                        'orden'     => $orden,
+                        'nombre'    => $archivo->getClientName(),
+                        'tamanio'   => $archivo->getSizeByUnit(),
+                        'ruta'   => "/uploads/auv/respuesta/{$grupo}/" . $nombreAdjunto,
+                        'fecreg' => date('Y-m-d H:i:s')
+                     ));
+                     $archivo->move($this->pathRespuestaAdjunto . DIRECTORY_SEPARATOR . $grupo, $nombreAdjunto, true);
+                     $orden++;
+                  }
+               }
+               break;
+            case 'save-respuestas':
+               $salon = $this->request->getPost('salon');
+               $curso = $this->request->getPost('curso');
+               $periodo = $this->request->getPost('periodo');
+               $listado = $this->request->getPost('listado');
+               $listado = !empty($listado) ? json_decode((string) $listado, true) : [];
+               foreach ($listado as $value) {
+                  $auvRespNotaModel->actualizarNotasBloque(
+                     array('nota' => $value['nota'], 'revisado' => $value['revisado']),
+                     array('coditem' => $this->request->getPost('coditem'), 'codalu' => $value['codalu']),
+                     array($salon, $curso, intval($periodo))
+                  );
+               }
                break;
          endswitch;
          return $this->response->setJSON($jsonData->get())->setStatusCode(200);

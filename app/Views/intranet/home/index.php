@@ -74,6 +74,7 @@
       font-weight: bold;
       margin-bottom: 0px;
       letter-spacing: 1px;
+      font-size: 14px;
    }
 
    .calendar ul {
@@ -139,6 +140,10 @@
       background: #f2f2f2;
    }
 
+   .list-group-item {
+      cursor: pointer;
+   }
+
    @media only screen and (max-width: 1350px) {
       .content-body-pub img {
          width: 100%;
@@ -188,9 +193,7 @@
             <div class="card card-main mb-4">
                <div class="card-header bg-<?= $color ?> rounded m-2" style="padding-top: 10px; padding-bottom: 14px;">
                   <div class="d-flex align-items-center gap-3">
-                     <div class="text-white">
-                        <i class="fad fa-comment-alt-lines" style="font-size: 2.6em;"></i>
-                     </div>
+                     <img src="<?= base_url('img/iconos/megafono.png') ?>" width="40" height="40">
                      <div>
                         <h5 class="titulo-pub"><?= $pub['titulo'] ?></h5>
                         <span class="badge-tipo"><?= $pub['tipodes'] ?></span>
@@ -227,7 +230,7 @@
       </div>
       <div class="col-md-4">
          <div class="row mb-4 sticky-top">
-            <div class="col-md order-1">
+            <div class="col-md-12 order-1 mb-4">
                <div class="card card-main">
                   <div class="card-body">
                      <div class="wrapper">
@@ -254,6 +257,29 @@
                   </div>
                </div>
             </div>
+            <?php if (ENTIDAD == 'ALU') { ?>
+               <div class="col-md-12 order-2">
+                  <div class="card card-main">
+                     <div class="card-body">
+                        <h5 class="fw-bold" style="font-size: 14px;">Actividades / Exámenes pendientes</h5>
+                        <?php if(empty(@$listadoPendientes)) { ?>
+                           <p class="mb-0">Nada que mostrar</p>
+                        <?php } ?>
+                        <ul class="list-group list-group-flush">
+                           <?php foreach (@$listadoPendientes as $value) { ?>
+                              <a href="/intranet/cursos/auv/<?= $value['salon'] ?>/<?= $value['curso'] ?>" class="list-group-item d-flex align-items-center gap-2 px-0">
+                                 <img src="<?= base_url('img/iconos/lista.png') ?>" width="29" height="29">
+                                 <div style="max-width: 80%;">
+                                    <p class="mb-0 text-truncate"><?= $value['titulo'] ?></p>
+                                    <div style="font-size: 12px; color: #A2A2A2;"><?= $value['curnom'] ?></div>
+                                 </div>
+                           </a>
+                           <?php } ?>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            <?php } ?>
          </div>
       </div>
    </div>

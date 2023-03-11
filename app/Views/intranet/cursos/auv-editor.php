@@ -32,13 +32,13 @@
                               <div class="row my-3">
                                    <div class="col-sm">
                                         <label for="mfecpub" class="form-label">Fecha publicación:</label>
-                                        <input type="datetime-local" class="form-control" id="mfecpub" value="<?= date('Y-m-d\TH:i:s') ?>">
+                                        <input type="datetime-local" class="form-control" id="mfecpub" value="<?= date('Y-m-d\TH:i') ?>">
                                    </div>
                               </div>
                               <div class="row my-3">
                                    <div class="col-sm">
-                                        <label for="mfecmax" class="form-label">Fecha de cierre:</label>
-                                        <input type="datetime-local" class="form-control" id="mfecmax" value="<?= date('Y-m-d\TH:i:s') ?>" disabled>
+                                        <label for="mfecmax" class="form-label">Fecha max. entrega:</label>
+                                        <input type="datetime-local" class="form-control" id="mfecmax" value="<?= date('Y-m-d\TH:i') ?>" disabled>
                                    </div>
                               </div>
                               <div class="row my-3">
@@ -97,7 +97,7 @@
                } else {
                     $('#btnGuardarItem').prop('disabled', false);
                }
-               if ($(this).val() == 'T') {
+               if ($(this).val() == 'E' || $(this).val() == 'T') {
                     $('#mfecmax').prop('disabled', false);
                } else {
                     $('#mfecmax').prop('disabled', true);
@@ -106,6 +106,10 @@
 
           $('#btnGuardarItem').click(function(e) {
                e.preventDefault();
+               if (($('#mtipo').val() == "E" || $('#mtipo').val() == "T") && $('#mfecmax').val() == "") {
+                    showAlertSweet('Debe seleccionar la fecha de máxima de entrega!', 'warning');
+                    return;
+               }
                const filesUp = document.getElementById('madjuntos').files;
                const form = new FormData();
                form.append('action', 'I');

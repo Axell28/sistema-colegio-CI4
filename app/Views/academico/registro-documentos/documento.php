@@ -27,7 +27,7 @@
          </div>
          <div class="row">
             <div class="col-md-12">
-               <input class="form-control" type="file" id="filedoc" accept="application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel, text/plain, .csv" required>
+               <input class="form-control" type="file" id="filedoc" accept="application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel, text/plain, application/msword, application/vnd.ms-powerpoint .csv" required>
                <div class="invalid-feedback">Debe seleccionar un archivo</div>
             </div>
          </div>

@@ -188,7 +188,9 @@ $salon = esc($datosSalon);
                coordinador: $('#cmbcoordinador').val(),
                vacantes: $('#txtvacantes').val(),
                modalidad: $('#cmbmodalidad').val(),
-               turno: $('#cmbturno').val()
+               turno: $('#cmbturno').val(),
+               filter_anio: $('#cmbAnioFilter').val(),
+               filter_nivel: $('#cmbNivelFilter').val()
             },
             success: function(response) {
                if (response.listaSalones) {

@@ -150,7 +150,7 @@
             type: "post",
             url: "<?= MODULO_URL ?>/perfiles/json/delete-perfil",
             data: {
-               perfil: perfil
+               perfil
             },
             success: function(resp) {
                if (resp.listaPerfiles) {

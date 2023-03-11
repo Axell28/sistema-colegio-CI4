@@ -14,15 +14,17 @@ class AuvGrupoItemModel extends Model
      protected $returnType     = 'array';
      protected $useSoftDeletes = false;
 
-     protected $allowedFields = ['codigo', 'grupo', 'titulo', 'tipo', 'cuerpo', 'fecpub', 'ocultar', 'adjunto'];
+     protected $allowedFields = ['codigo', 'grupo', 'titulo', 'tipo', 'cuerpo', 'fecpub', 'fecmax', 'ocultar', 'adjunto', 'evaluar'];
 
      protected $useTimestamps = false;
      protected $dateFormat    = 'datetime';
 
-     public function guardar(array $params, $action = "I")
+     public function guardar(array $params)
      {
+          $evaluar = in_array($params['tipo'], array('E', 'T'));
+          $auvRespNotaModel = new AuvRespNotaModel();
           try {
-
+               $this->db->transBegin();
                $codigo = $this->insert(array(
                     'grupo'   => $params['grupo'],
                     'titulo'  => $params['titulo'],
@@ -30,18 +32,37 @@ class AuvGrupoItemModel extends Model
                     'cuerpo'  => $params['cuerpo'],
                     'fecpub'  => $params['fecpub'],
                     'fecmax'  => !empty($params['fecmax']) ? $params['fecmax'] : null,
-                    'adjunto' => $params['adjunto']
+                    'adjunto' => $params['adjunto'],
+                    'evaluar' => $evaluar ? 'S' : null
                ), true);
+               if ($evaluar) {
+                    $auvRespNotaModel->insertarNotasBloque(array('coditem' => $codigo, 'grupo' => $params['grupo']));
+               }
+               $this->db->transCommit();
                return $codigo;
           } catch (\Exception $ex) {
+               $this->db->transRollback();
                throw new \Exception($ex->getMessage());
           }
+     }
+
+     public function obtenerDatosItem($coditem)
+     {
+          $query = $this->db->table('auv_grupo_item agi')
+               ->select("agi.codigo, agi.grupo, agi.titulo, ag.curso, ag.periodo, ag.salon, c.nombre, dt.descripcion AS tipodes")
+               ->join('auv_grupo ag', "ag.codigo = agi.grupo", "INNER")
+               ->join('curso c', "c.codcur = ag.curso", "LEFT")
+               ->join('datosdet dt', "dt.coddat = '014' and dt.coddet = agi.tipo", 'LEFT')
+               ->where('agi.codigo', $coditem);
+          $result = $query->get();
+          return $result->getRowArray();
      }
 
      public function listarItems($params = array())
      {
           $auvGrupoAdjModel = new AuvGrupoAdjModel();
           $auvRespAdjModel = new AuvRespAdjModel();
+          $auvRespNotaModel = new AuvRespNotaModel();
           $modoAlumno = isset($params['codalu']);
           $query = $this->db->table('auv_grupo_item aip')
                ->select(array(
@@ -61,11 +82,8 @@ class AuvGrupoItemModel extends Model
           $result = $query->get()->getResultArray();
           foreach ($result as &$item) :
                $item['adjuntos'] = $auvGrupoAdjModel->obtenerAdjuntosAuvGrupoItem($item['codigo']);
-               if($modoAlumno) {
-                    $item['respuesta'] = $auvRespAdjModel->listarRespuestasAdj(array(
-                         'coditem' => $item['codigo'],
-                         'codalu'  => $params['codalu'] 
-                    ));
+               if ($modoAlumno) {
+                    $item['respuesta'] = $auvRespNotaModel->obtenerDetalle(array('coditem' => $item['codigo'], 'codalu' => $params['codalu']));
                }
           endforeach;
           return $result;

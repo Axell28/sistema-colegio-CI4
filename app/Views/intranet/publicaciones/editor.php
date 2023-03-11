@@ -146,7 +146,6 @@
             type: 'string'
          }
       ],
-      id: 'perfil',
       localdata: '<?= json_encode(@$listaPerfiles) ?>'
    };
 
@@ -193,7 +192,8 @@
       if (datosIndex.length < 0) return false;
       let list = [];
       for (let i = 0; i < datosIndex.length; i++) {
-         let perfil = $(jqxgridTreeDestino).jqxGrid('getcellvalue', i, 'perfil');
+         let data = $(jqxgridTreeDestino).jqxGrid('getrowdata', datosIndex[i]);
+         let perfil = data.perfil;
          list.push(perfil);
       }
       return list;
@@ -203,7 +203,7 @@
       const grillaDest = $(jqxgridTreeDestino).jqxGrid('getrows');
       $.each(grillaDest, function(index, value) {
          let destinatario = listaDestinatarios.find(item => item.perfil == value.perfil);
-         if(destinatario) {
+         if (destinatario) {
             $(jqxgridTreeDestino).jqxGrid('selectrow', index);
          }
       });
@@ -276,12 +276,20 @@
          editable: false,
          selectionmode: 'checkbox',
          columns: [{
-            text: "Destinatarios",
-            dataField: 'nombre',
-            align: 'center',
-            width: "90%",
-            editable: false
-         }]
+               text: 'perfil',
+               dataField: 'perfil',
+               align: 'center',
+               width: "20%",
+               editable: false
+            },
+            {
+               text: "Destinatarios",
+               dataField: 'nombre',
+               align: 'center',
+               width: "90%",
+               editable: false
+            }
+         ]
       });
 
       $('#filesAdjunto').change(function(e) {

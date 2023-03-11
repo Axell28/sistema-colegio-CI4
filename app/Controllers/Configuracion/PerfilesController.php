@@ -60,6 +60,10 @@ class PerfilesController extends BaseController
                break;
             case 'delete-perfil':
                $perfil = $this->request->getPost('perfil');
+               $datosPerfil = $this->perfilModel->where('perfil', $perfil)->first();
+               if ($datosPerfil['eliminar'] == 'N') {
+                  throw new \Exception("Este perfil no puede ser eliminado");
+               }
                $this->perfilModel->delete($perfil);
                $jsonData->set('listaPerfiles', $this->perfilModel->findAll());
                break;

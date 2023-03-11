@@ -29,7 +29,7 @@
       <div class="col-md-6">
          <div class="card card-main">
             <div class="card-body">
-               <div class="row mb-3">
+               <!-- <div class="row mb-3">
                   <div class="col-sm-6 my-1 text-end">
                      <button class="btn btn-outline-danger w-100" id="btnReporte">
                         <i class="fas fa-file-pdf"></i>
@@ -42,7 +42,7 @@
                         <span>&nbsp;Exportar Excel</span>
                      </button>
                   </div>
-               </div>
+               </div> -->
                <div id="jqxgridFamilia"></div>
                <div class="pt-3">
                   <p class="mb-0" id="totalReg">Total de Familias : &nbsp; 0</p>
@@ -123,7 +123,7 @@
                                  </div>
                                  <div class="col-md-4 my-2">
                                     <label for="txtcelularFam" class="form-label">Teléfono / Celular:</label>
-                                    <input type="text" class="form-control" id="txtcelularFam" required>
+                                    <input type="text" class="form-control" id="txtcelularFam">
                                     <div class="invalid-feedback">Campo requerido</div>
                                  </div>
                               </div>
@@ -176,7 +176,7 @@
                               <div class="row">
                                  <div class="col-md-6 my-2">
                                     <label for="txtfecnac1" class="form-label">Fecha nacimiento:</label>
-                                    <input type="date" class="form-control" id="txtfecnac1" required>
+                                    <input type="date" class="form-control" id="txtfecnac1">
                                     <div class="invalid-feedback">Campo requerido</div>
                                  </div>
                                  <div class="col-md-6 my-2">
@@ -192,7 +192,7 @@
                               <div class="row">
                                  <div class="col-md-6 my-2">
                                     <label for="cmbtipdoc1" class="form-label">Tipo documento:</label>
-                                    <select class="form-select" id="cmbtipdoc1" required>
+                                    <select class="form-select" id="cmbtipdoc1">
                                        <option value="">-Seleccione-</option>
                                        <?php foreach (esc($listaDocumentosIde) as $dato) { ?>
                                           <option value="<?= $dato['codigo'] ?>"><?= $dato['descripcion'] ?></option>
@@ -202,7 +202,7 @@
                                  </div>
                                  <div class="col-md-6 my-2">
                                     <label for="txtnumdoc1" class="form-label">Nro documento:</label>
-                                    <input type="text" class="form-control" id="txtnumdoc1" onkeypress="return inputSoloNumeros(event)" required>
+                                    <input type="text" class="form-control" id="txtnumdoc1" onkeypress="return inputSoloNumeros(event)">
                                     <div class="invalid-feedback">Campo requerido</div>
                                  </div>
                               </div>
@@ -269,7 +269,7 @@
                               <div class="row">
                                  <div class="col-md-6 my-2">
                                     <label for="txtfecnac2" class="form-label">Fecha nacimiento:</label>
-                                    <input type="date" class="form-control" id="txtfecnac2" required>
+                                    <input type="date" class="form-control" id="txtfecnac2">
                                     <div class="invalid-feedback">Campo requerido</div>
                                  </div>
                                  <div class="col-md-6 my-2">
@@ -285,7 +285,7 @@
                               <div class="row">
                                  <div class="col-md-6 my-2">
                                     <label for="cmbtipdoc2" class="form-label">Tipo documento:</label>
-                                    <select class="form-select" id="cmbtipdoc2" required>
+                                    <select class="form-select" id="cmbtipdoc2">
                                        <option value="">-Seleccione-</option>
                                        <?php foreach (esc($listaDocumentosIde) as $dato) { ?>
                                           <option value="<?= $dato['codigo'] ?>"><?= $dato['descripcion'] ?></option>
@@ -295,7 +295,7 @@
                                  </div>
                                  <div class="col-md-6 my-2">
                                     <label for="txtnumdoc2" class="form-label">Nro documento:</label>
-                                    <input type="text" class="form-control" id="txtnumdoc2" onkeypress="return inputSoloNumeros(event)" required>
+                                    <input type="text" class="form-control" id="txtnumdoc2" onkeypress="return inputSoloNumeros(event)">
                                     <div class="invalid-feedback">Campo requerido</div>
                                  </div>
                               </div>
@@ -507,7 +507,7 @@
 
       $(jqxgridFamilia).jqxGrid({
          width: '100%',
-         height: '600',
+         height: '653',
          source: jqxgridFamiliaAdapter,
          showfilterrow: true,
          filterable: true,

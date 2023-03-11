@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Reportes;
 
+use App\Helpers\Funciones;
 use App\Models;
 
 class ReporteEmpleados
@@ -49,26 +50,26 @@ class ReporteEmpleados
    {
       $h = 7;
       $this->fpdf->SetFont('Arial', 'B', 7);
-      $this->fpdf->Cell(21, $h, utf8_decode("CÓDIGO"), 1, 0, 'C', true);
+      $this->fpdf->Cell(21, $h, $this->convert_to_utf8('CÓDIGO'), 1, 0, 'C', true);
       $this->fpdf->Cell(60, $h, "APELLIDOS Y NOMBRES", 1, 0, 'C', true);
       $this->fpdf->Cell(25, $h, "DOC. IDENTIDAD", 1, 0, 'C', true);
       $this->fpdf->Cell(29, $h, "FEC. NACIMIENTO", 1, 0, 'C', true);
       $this->fpdf->Cell(26, $h, "CELULAR", 1, 0, 'C', true);
       $this->fpdf->Cell(37, $h, "EMAIL", 1, 0, 'C', true);
-      $this->fpdf->Cell(35, $h, utf8_decode("ÁREA LABORAL"), 1, 0, 'C', true);
+      $this->fpdf->Cell(35, $h, $this->convert_to_utf8("ÁREA LABORAL"), 1, 0, 'C', true);
       $this->fpdf->Cell(29, $h, "FEC. INGRESO", 1, 0, 'C', true);
       $this->fpdf->Cell(20, $h, "ESTADO", 1, 1, 'C', true);
       $this->fpdf->SetFont('Arial', '', 7);
 
       foreach ($pivotEmpleados as $value) {
          $this->fpdf->Cell(21, $h, $value['codemp'], 1, 0, 'C');
-         $this->fpdf->Cell(60, $h, " " . $value['nomcomp'], 1, 0, 'L');
+         $this->fpdf->Cell(60, $h, " " . $this->convert_to_utf8($value['nomcomp']), 1, 0, 'L');
          $this->fpdf->Cell(25, $h, $value['numdoc'], 1, 0, 'C');
-         $this->fpdf->Cell(29, $h, date('d/m/Y', strtotime($value['fecnac'])), 1, 0, 'C');
-         $this->fpdf->Cell(26, $h, $value['celular1'], 1, 0, 'C');
+         $this->fpdf->Cell(29, $h, date('d/m/Y', Funciones::obtenerTimeStamp($value['fecnac'])), 1, 0, 'C');
+         $this->fpdf->Cell(26, $h, !empty($value['celular1']) ? $value['celular1'] : "", 1, 0, 'C');
          $this->fpdf->Cell(37, $h, " " . $value['email'], 1, 0, 'L');
-         $this->fpdf->Cell(35, $h, utf8_decode($value['area_des']), 1, 0, 'C');
-         $this->fpdf->Cell(29, $h, date('d/m/Y', strtotime($value['fecing'])), 1, 0, 'C');
+         $this->fpdf->Cell(35, $h, $this->convert_to_utf8($value['area_des']), 1, 0, 'C');
+         $this->fpdf->Cell(29, $h, date('d/m/Y', Funciones::obtenerTimeStamp($value['fecing'])), 1, 0, 'C');
          $this->fpdf->Cell(20, $h, $value['estado_des'], 1, 1, 'C');
       }
 
@@ -84,5 +85,11 @@ class ReporteEmpleados
          'area' => $this->params['area'],
          'estado' => $this->params['estado']
       ));
+   }
+
+   private function convert_to_utf8(string $cadena)
+   {
+      if (empty($cadena)) return "";
+      return iconv('UTF-8', 'windows-1252', $cadena);
    }
 }

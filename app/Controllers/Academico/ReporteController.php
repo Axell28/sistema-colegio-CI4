@@ -30,6 +30,8 @@ class ReporteController extends BaseController
          case '005':
             $reporte = new Reportes\FichaMatricula();
             break;
+         case '006':
+            $reporte = new Reportes\ReporteDeNotas();
       }
       $reporte->execute($params);
    }

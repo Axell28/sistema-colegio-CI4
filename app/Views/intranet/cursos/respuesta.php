@@ -1,7 +1,6 @@
 <div class="modal-content">
      <div class="modal-header">
-          <h1 class="modal-title fs-5">Enviar tarea</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5">Enviar resolución</h1>
      </div>
      <div class="modal-body text-start px-4">
           <div class="mb-3 row">
@@ -13,13 +12,13 @@
           <div class="mb-4 row">
                <div class="col-sm-12">
                     <label for="formFile" class="form-label">Adjuntar archivo:</label>
-                    <input class="form-control" type="file" id="formFile">
+                    <input class="form-control" type="file" multiple id="formFile">
                </div>
           </div>
           <div class="row mt-3">
                <div class="col-sm-12">
                     <button class="btn btn-success text-white w-100" id="btnEnviarResp" disabled>
-                         <span>Enviar adjunto&nbsp;</span>
+                         <span>Enviar resolución&nbsp;</span>
                          <i class="far fa-arrow-right"></i>
                     </button>
                </div>
@@ -36,10 +35,14 @@
 
           $('#btnEnviarResp').on('click', function() {
                const form = new FormData();
+               const filesUp = document.getElementById('formFile').files;
+               form.append('salon', '<?= @$salon ?>');
                form.append('grupo', '<?= @$grupo ?>');
                form.append('auvitem', '<?= @$auvitem ?>');
                form.append('comentario', $('#txtreparea').val());
-               form.append('archivo', document.getElementById('formFile').files[0]);
+               $.each(filesUp, function(index, value) {
+                    form.append('adjuntos[]', value);
+               });
                $.ajax({
                     type: "POST",
                     url: "<?= MODULO_URL ?>/cursos/json/enviar-resp",

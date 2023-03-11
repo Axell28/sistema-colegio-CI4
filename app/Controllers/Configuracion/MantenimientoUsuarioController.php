@@ -30,7 +30,13 @@ class MantenimientoUsuarioController extends BaseController
       $viewData = new ViewData();
       $perfilModel = new Models\PerfilModel();
       $viewData->isAjax(true);
-      $viewData->set('action', 'I');
+      $usuarioDatos = new \stdClass();
+      $usuarioDatos->usuario = $this->request->getPost('usuario');
+      $usuarioDatos->nombre  = $this->request->getPost('nombre');
+      $usuarioDatos->perfil  = $this->request->getPost('perfil');
+      $usuarioDatos->estado  = $this->request->getPost('estado');
+      $viewData->set('usuarioDatos', $usuarioDatos);
+      $viewData->set('action', $this->request->getPost('action'));
       $viewData->set('listaPerfiles', $perfilModel->listarPerfiles());
       return view('configuracion/mantenimiento-usuario/usuario', $viewData->get());
    }
@@ -42,6 +48,21 @@ class MantenimientoUsuarioController extends BaseController
          $perfilF = $this->request->getPost('perfilF');
          $estadoF = $this->request->getPost('estadoF');
          switch ($caso):
+            case 'save':
+               $action = $this->request->getPost('action');
+               $cambiarPwd = $this->request->getPost('cambiarpwd') == "S";
+               $value = array(
+                  'usuario' => $this->request->getPost('usuario'),
+                  'perfil' => $this->request->getPost('perfil'),
+                  'nombre' => $this->request->getPost('nombre'),
+                  'estado' => $this->request->getPost('estado'),
+                  'password' => $this->request->getPost('password')
+               );
+               if ($cambiarPwd && $action = 'E') {
+                  $value['cmb_pwd'] = true;
+               }
+               $this->usuarioModel->guardarUsario($value, $action);
+               break;
             case 'update-estado':
                $usuario = $this->request->getPost('usuario');
                $estado  = $this->request->getPost('estado');

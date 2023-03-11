@@ -38,6 +38,16 @@ class Funciones
       @rmdir($pathDir);
    }
 
+   public static function eliminarArchivosxItemAuv($pathGrupo, $item)
+   {
+      $archivos = glob($pathGrupo . DIRECTORY_SEPARATOR . "F_" . $item . "_*");
+      foreach ($archivos as $value) {
+         if(is_file($value)) {
+            unlink($value);
+         }
+      }
+   }
+
    public static function obtenerTamanioArchivo($filePath = null, $fileBytes = 0)
    {
       $bytes = $fileBytes;
@@ -66,6 +76,52 @@ class Funciones
       return $htmlmin;
    }
 
+   public static function obtenerTimeStamp($date = 'now')
+   {
+      $datetime = new \DateTime($date);
+      return $datetime->getTimestamp();
+   }
+
+   public static function limpiarString($cadena)
+   {
+      $cadena = str_replace(
+         array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
+         array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
+         $cadena
+      );
+
+      $cadena = str_replace(
+         array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
+         array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
+         $cadena
+      );
+
+      $cadena = str_replace(
+         array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
+         array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
+         $cadena
+      );
+
+      $cadena = str_replace(
+         array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
+         array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
+         $cadena
+      );
+
+      $cadena = str_replace(
+         array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
+         array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
+         $cadena
+      );
+
+      $cadena = str_replace(
+         array('ñ', 'Ñ', 'ç', 'Ç'),
+         array('n', 'N', 'c', 'C'),
+         $cadena
+      );
+      return $cadena;
+   }
+   
    public static function crearArbolMenuHtml(array $arrayMenuHtml, $activeMenu = null)
    {
       $pivotMenu = self::verificarMenuActivo($arrayMenuHtml, $activeMenu);

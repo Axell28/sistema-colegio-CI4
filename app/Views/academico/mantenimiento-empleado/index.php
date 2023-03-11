@@ -47,12 +47,16 @@
    #quitarPhoto {
       display: none;
    }
+
+   #btnActivarUsuario {
+      display: none;
+   }
 </style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="container-fluid">
    <div class="row mt-1 mb-3">
-      <div class="col-lg-12 my-auto">
+      <div class="col-lg-8 my-auto">
          <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                <li class="breadcrumb-item"><a href="<?= MODULO_URL ?>"><?= MODULO_NAME ?></a></li>
@@ -60,12 +64,12 @@
             </ol>
          </nav>
       </div>
-      <!-- <div class="col-sm text-end my-auto">
-         <button class="btn btn-warning btn-sm">
+      <div class="col-sm text-end my-auto">
+         <button class="btn btn-warning btn-sm" id="btnActivarUsuario">
             <i class="fas fa-shield-check"></i>
             <span>&nbsp;Activar usuario</span>
          </button>
-      </div> -->
+      </div>
    </div>
    <div class="row">
       <div class="col-md-6">
@@ -465,6 +469,7 @@
       $('.photo-box img').attr('src', `<?= base_url('img/default/man.png') ?>`);
       $('#btnDelete').prop('disabled', true);
       $('#cmbestado').prop('disabled', false);
+      $('#btnActivarUsuario').hide();
       $(jqxgridEmpleados).jqxGrid('clearselection');
       frmEmpleado.classList.remove('was-validated');
    }
@@ -604,6 +609,13 @@
          $('.photo-box img').attr('src', src);
          $('#quitarPhoto').hide();
       }
+
+      if (data.tiene_usuario == 'S') {
+         $('#btnActivarUsuario').hide();
+      } else {
+         $('#btnActivarUsuario').show();
+      }
+
       $('#cmbarea').val(data.area);
       $('#cmbcargo').val(data.cargo);
       $('#btnDelete').prop('disabled', false);
@@ -775,6 +787,38 @@
 
       $('#quitarPhoto').click(function(e) {
          eliminarFotoEmpleado();
+      });
+
+      $('#btnActivarUsuario').click(function(e) {
+         let index = $(jqxgridEmpleados).jqxGrid('getselectedrowindex');
+         let rowdata = $(jqxgridEmpleados).jqxGrid('getrowdata', index);
+         $.ajax({
+            type: "POST",
+            url: "<?= MODULO_URL ?>/mantenimiento-empleado/json/activar-usuario",
+            data: {
+               codigo: rowdata.codemp,
+               nomcomp: rowdata.nomcomp,
+               apellidos: rowdata.apepat + " " + rowdata.apemat,
+               nombres: rowdata.nombres,
+               email: rowdata.email
+            },
+            success: function(response) {
+               if (response.listaEmpleados) {
+                  showAlertSweet('Usuario activado correctamente!', 'success');
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Usuario activado',
+                     text: '',
+                     html: `<div class="mb-2">Usuario:&nbsp; ${response.usuario}</div><div>Contraseña:&nbsp; ${response.password}</div>`,
+                     allowOutsideClick: false
+                  });
+                  $('#btnActivarUsuario').hide();
+                  jqxgridEmpleadosSource.localdata = response.listaEmpleados;
+                  $(jqxgridEmpleados).jqxGrid('updateBoundData', 'data');
+                  $(jqxgridEmpleados).jqxGrid('selectrow', $(jqxgridEmpleados).jqxGrid('getselectedrowindex'));
+               }
+            }
+         });
       });
 
       $('#btnReporte').click(function(e) {

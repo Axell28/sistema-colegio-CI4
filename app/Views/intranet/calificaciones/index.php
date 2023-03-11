@@ -1,4 +1,15 @@
 <?= $this->extend('template/layout') ?>
+<?= $this->section('css') ?>
+<style>
+   .color-blue {
+      color: blue;
+   }
+
+   .color-red {
+      color: red;
+   }
+</style>
+<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="container-fluid">
    <div class="row mt-1 mb-3">
@@ -55,6 +66,51 @@
 
    const jqxgridCalificacionSource = {
       datatype: 'json',
+      dataFields: [{
+            name: 'codigo',
+            type: 'string'
+         },
+         {
+            name: 'codalu',
+            type: 'string'
+         },
+         {
+            name: 'fila',
+            type: 'string'
+         },
+         {
+            name: 'nomcomp',
+            type: 'string'
+         },
+         {
+            name: 'nota_act',
+            type: 'number'
+         },
+         {
+            name: 'nota_exm',
+            type: 'number'
+         },
+         {
+            name: 'nota_con',
+            type: 'number'
+         },
+         {
+            name: 'nota_pp',
+            type: 'number'
+         },
+         {
+            name: 'periodo',
+            type: 'string'
+         },
+         {
+            name: 'salon',
+            type: 'string'
+         },
+         {
+            name: 'salondes',
+            type: 'string'
+         }
+      ],
       localdata: `[]`
    };
 
@@ -62,6 +118,11 @@
 
    function validacionNota(cell, value, tipcal = 'N') {
       if (isNaN(value)) {
+         return {
+            result: false,
+            message: "Ingrese un número del 05 a 20"
+         };
+      } else if (value > 20 || value < 0) {
          return {
             result: false,
             message: "Ingrese un número del 05 a 20"
@@ -83,9 +144,9 @@
          editable: true,
          editmode: 'dblclick',
          columns: [{
-               text: "Nro",
+               text: "Orden",
                align: 'center',
-               width: "6%",
+               width: "5%",
                datafield: 'fila',
                cellsalign: 'center',
                editable: false,
@@ -102,53 +163,66 @@
                text: "Alumno",
                datafield: 'nomcomp',
                align: 'center',
-               width: "auto",
+               width: "44%",
                editable: false,
             },
             {
-               text: "Comp. 1",
+               text: "Nota Act.",
                align: 'center',
-               width: "9%",
-               datafield: 'nota_c1',
+               width: "10%",
+               datafield: 'nota_act',
                cellsalign: 'center',
                columngroup: 'data_periodo',
-               validation: validacionNota
+               validation: validacionNota,
+               editable: false,
+               cellclassname: function(row, column, value, data) {
+                  let rowdata = $(jqxgridCalificacion).jqxGrid('getrowdata', row);
+                  let color = rowdata.nota_act >= 11 ? 'color-blue' : (rowdata.nota_act <= 10 && rowdata.nota_act >= 0 ? 'color-red' : '');
+                  return color;
+               }
             },
             {
-               text: "Comp. 2",
+               text: "Nota Exm.",
                align: 'center',
-               width: "9%",
+               width: "10%",
                cellsalign: 'center',
-               datafield: 'nota_c2',
+               datafield: 'nota_exm',
                columngroup: 'data_periodo',
-               validation: validacionNota
+               validation: validacionNota,
+               editable: false,
+               cellclassname: function(row, column, value, data) {
+                  let rowdata = $(jqxgridCalificacion).jqxGrid('getrowdata', row);
+                  let color = rowdata.nota_exm >= 11 ? 'color-blue' : (rowdata.nota_exm <= 10 && rowdata.nota_exm >= 0 ? 'color-red' : '');
+                  return color;
+               }
             },
             {
-               text: "Comp. 3",
+               text: "Nota Cond.",
                align: 'center',
-               width: "9%",
+               width: "10%",
                cellsalign: 'center',
-               datafield: 'nota_c3',
+               datafield: 'nota_con',
                columngroup: 'data_periodo',
-               validation: validacionNota
+               validation: validacionNota,
+               cellclassname: function(row, column, value, data) {
+                  let rowdata = $(jqxgridCalificacion).jqxGrid('getrowdata', row);
+                  let color = rowdata.nota_con >= 11 ? 'color-blue' : (rowdata.nota_con <= 10 && rowdata.nota_con >= 0 ? 'color-red' : '');
+                  return color;
+               }
             },
             {
-               text: "Comp. 4",
+               text: "Promedio",
                align: 'center',
-               width: "9%",
-               cellsalign: 'center',
-               datafield: 'nota_c4',
-               columngroup: 'data_periodo',
-               validation: validacionNota
-            },
-            {
-               text: "Prom.",
-               align: 'center',
-               width: "9%",
-               cellsalign: 'center',
                datafield: 'nota_pp',
+               width: "10%",
+               cellsalign: 'center',
                columngroup: 'data_periodo',
-               editable: false
+               editable: false,
+               cellclassname: function(row, column, value, data) {
+                  let rowdata = $(jqxgridCalificacion).jqxGrid('getrowdata', row);
+                  let color = rowdata.nota_pp >= 11 ? 'color-blue' : (rowdata.nota_pp <= 10 && rowdata.nota_pp >= 0 ? 'color-red' : '');
+                  return color;
+               }
             }
          ],
          columnGroups: [{
@@ -162,12 +236,27 @@
          const args = event.args;
          const rowdata = args.row;
          const datafield = args.datafield;
-         let n1 = datafield == 'nota_c1' ? parseInt(args.value) : (rowdata.nota_c1 !== null ? parseInt(rowdata.nota_c1) : 0);
-         let n2 = datafield == 'nota_c2' ? parseInt(args.value) : (rowdata.nota_c2 !== null ? parseInt(rowdata.nota_c2) : 0);
-         let n3 = datafield == 'nota_c3' ? parseInt(args.value) : (rowdata.nota_c3 !== null ? parseInt(rowdata.nota_c3) : 0);
-         let n4 = datafield == 'nota_c4' ? parseInt(args.value) : (rowdata.nota_c4 !== null ? parseInt(rowdata.nota_c4) : 0);
-         let prom = (int)(n1 + n2 + n3 + n4) / 4;
-         $(jqxgridCalificacion).jqxGrid('setcellvalue', args.rowindex, 'nota_pp', prom);
+         $.ajax({
+            type: "POST",
+            url: "<?= MODULO_URL ?>/calificaciones/json/update-nota",
+            data: {
+               fsalon: $('#cmbsalon').val(),
+               fcurso: $('#cmbcurso').val(),
+               fperiodo: $('#cmbperiodo').val(),
+               campo: datafield,
+               valor: args.value,
+               codigo: rowdata.codigo
+            },
+            beforeSend: function() {
+               $(jqxgridCalificacion).jqxGrid('showloadelement');
+            },
+            success: function(response) {
+               if (response.listaCalificacion) {
+                  jqxgridCalificacionSource.localdata = response.listaCalificacion;
+                  $(jqxgridCalificacion).jqxGrid('updateBoundData', 'data');
+               }
+            }
+         });
       });
 
       $('#cmbsalon').change(function(e) {
@@ -182,6 +271,11 @@
          $('#cmbcurso').html(html);
       });
 
+      $('#cmbcurso').change(function(e) {
+         e.preventDefault();
+         $('#cmbperiodo').val('');
+      });
+
       $('#cmbperiodo').change(function(e) {
          e.preventDefault();
          $.ajax({
@@ -191,6 +285,9 @@
                fsalon: $('#cmbsalon').val(),
                fcurso: $('#cmbcurso').val(),
                fperiodo: $('#cmbperiodo').val(),
+            },
+            beforeSend: function() {
+               $(jqxgridCalificacion).jqxGrid('showloadelement');
             },
             success: function(response) {
                if (response.listaCalificacion) {

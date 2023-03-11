@@ -13,25 +13,18 @@
    }
 
    .accordion-button {
-      /* border-top: 1px solid black;
-      border-radius: 0px; */
-      border-top: 1px solid #BBBBBB;
-   }
-
-   .accordion-button:focus {
-      border-color: #BBBBBB;
+      background-color: #F0F2F5;
    }
 
    .accordion-button:hover {
-      background-color: #5575CA;
+      background-color: #04B29F;
       color: white;
       --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
    }
 
    .accordion-button:not(.collapsed) {
-      background-color: #5575CA;
+      background-color: #04B29F;
       color: white;
-      border-top: 1px solid #BBBBBB;
    }
 
    .accordion-button:not(.collapsed)::after {
@@ -39,9 +32,14 @@
    }
 
    .accordion-item {
-      border-left: 1px solid #BBBBBB;
+      /* border-left: 1px solid #BBBBBB;
       border-right: 1px solid #BBBBBB;
-      border-bottom: 1px solid #BBBBBB;
+      border-bottom: 1px solid #BBBBBB; */
+   }
+
+   .accordion-body {
+      border-top: none;
+      background-color: #F0F2F5;
    }
 
    h4.curso-nombre {
@@ -57,9 +55,25 @@
    }
 
    .bg-curso-fondo {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1900' height='300' preserveAspectRatio='none' viewBox='0 0 1900 300'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1145%26quot%3b)' fill='none'%3e%3crect width='1900' height='300' x='0' y='0' fill='rgba(21%2c 36%2c 159%2c 1)'%3e%3c/rect%3e%3cuse xlink:href='%23SvgjsSymbol1152' x='0' y='0'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsSymbol1152' x='720' y='0'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsSymbol1152' x='1440' y='0'%3e%3c/use%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1145'%3e%3crect width='1900' height='300' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cpath d='M-1 0 a1 1 0 1 0 2 0 a1 1 0 1 0 -2 0z' id='SvgjsPath1150'%3e%3c/path%3e%3cpath d='M-3 0 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0z' id='SvgjsPath1148'%3e%3c/path%3e%3cpath d='M-5 0 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0z' id='SvgjsPath1147'%3e%3c/path%3e%3cpath d='M2 -2 L-2 2z' id='SvgjsPath1149'%3e%3c/path%3e%3cpath d='M6 -6 L-6 6z' id='SvgjsPath1146'%3e%3c/path%3e%3cpath d='M30 -30 L-30 30z' id='SvgjsPath1151'%3e%3c/path%3e%3c/defs%3e%3csymbol id='SvgjsSymbol1152'%3e%3cuse xlink:href='%23SvgjsPath1146' x='30' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='30' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='30' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='30' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='30' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='90' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1148' x='90' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='90' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='90' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='90' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='150' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='150' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1149' x='150' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='150' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='150' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='210' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='210' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='210' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1150' x='210' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1148' x='210' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1150' x='270' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='270' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='270' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='270' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1151' x='270' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)' stroke-width='3'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='330' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='330' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='330' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='330' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='330' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1150' x='390' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='390' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='390' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='390' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1150' x='390' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='450' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='450' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='450' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1151' x='450' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)' stroke-width='3'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1149' x='450' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='510' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1148' x='510' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1149' x='510' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='510' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='510' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='570' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1149' x='570' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='570' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='570' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='570' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1149' x='630' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='630' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1151' x='630' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)' stroke-width='3'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1147' x='630' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1149' x='630' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1149' x='690' y='30' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='690' y='90' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='690' y='150' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='690' y='210' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1146' x='690' y='270' stroke='rgba(138%2c 162%2c 187%2c 0.41)'%3e%3c/use%3e%3c/symbol%3e%3c/svg%3e");
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='2000' height='300' preserveAspectRatio='none' viewBox='0 0 2000 300'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1136%26quot%3b)' fill='none'%3e%3crect width='2000' height='300' x='0' y='0' fill='rgba(127%2c 189%2c 93%2c 1)'%3e%3c/rect%3e%3cuse xlink:href='%23SvgjsSymbol1143' x='0' y='0'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsSymbol1143' x='720' y='0'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsSymbol1143' x='1440' y='0'%3e%3c/use%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1136'%3e%3crect width='2000' height='300' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cpath d='M-1 0 a1 1 0 1 0 2 0 a1 1 0 1 0 -2 0z' id='SvgjsPath1141'%3e%3c/path%3e%3cpath d='M-3 0 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0z' id='SvgjsPath1139'%3e%3c/path%3e%3cpath d='M-5 0 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0z' id='SvgjsPath1137'%3e%3c/path%3e%3cpath d='M2 -2 L-2 2z' id='SvgjsPath1140'%3e%3c/path%3e%3cpath d='M6 -6 L-6 6z' id='SvgjsPath1138'%3e%3c/path%3e%3cpath d='M30 -30 L-30 30z' id='SvgjsPath1142'%3e%3c/path%3e%3c/defs%3e%3csymbol id='SvgjsSymbol1143'%3e%3cuse xlink:href='%23SvgjsPath1137' x='30' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='30' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1139' x='30' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='30' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='30' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='90' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='90' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='90' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='90' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='90' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='150' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='150' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='150' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1141' x='150' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='150' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='210' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='210' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='210' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='210' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1142' x='210' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)' stroke-width='3'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1141' x='270' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1141' x='270' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='270' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1141' x='270' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='270' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='330' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='330' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='330' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='330' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='330' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1139' x='390' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='390' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='390' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1141' x='390' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='390' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='450' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='450' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='450' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1141' x='450' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='450' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='510' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='510' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1139' x='510' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1142' x='510' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)' stroke-width='3'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='510' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='570' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='570' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1139' x='570' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1140' x='570' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='570' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='630' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1139' x='630' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='630' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='630' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1138' x='630' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='690' y='30' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1142' x='690' y='90' stroke='rgba(54%2c 171%2c 51%2c 1)' stroke-width='3'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='690' y='150' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='690' y='210' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3cuse xlink:href='%23SvgjsPath1137' x='690' y='270' stroke='rgba(54%2c 171%2c 51%2c 1)'%3e%3c/use%3e%3c/symbol%3e%3c/svg%3e");
       border-radius: 4px;
       background-size: cover;
+   }
+
+   @media only screen and (max-width: 1350px) {
+      .accordion-body .card-body img {
+         width: 100%;
+         height: auto;
+      }
+
+      .accordion-body .card-body video {
+         width: 100%;
+         height: auto;
+      }
+
+      .accordion-body .card-body iframe {
+         max-width: 100%;
+      }
    }
 </style>
 <?= $this->endSection() ?>
@@ -80,8 +94,8 @@
       <div class="col-lg-12">
          <div class="card card-main">
             <div class="card-body pt-4">
-               <div class="px-3 py-4 bg-curso-fondo">
-                  <h4 class="curso-nombre"><i class="fad fa-book"></i>&nbsp; <?= @$cursoNombre ?></h4>
+               <div class="px-3 py-3 bg-curso-fondo">
+                  <h4 class="curso-nombre mt-1"><i class="fad fa-book"></i>&nbsp; <?= @$cursoNombre ?></h4>
                   <p class="curso-encargado mb-0">DOCENTE:&nbsp; <?= @$cursoEncargado ?></p>
                </div>
                <br>
@@ -124,9 +138,9 @@
                   </div>
                   <?php if (@$esDocente || @$esAdmin) { ?>
                      <div class="mt-3 px-3">
-                        <button class="btn btn-success text-white w-100 <?= !$existePeriodoActivo ? 'disabled' : '' ?>" id="btnAddGrupo">
+                        <button class="btn btn-primary text-white w-100 py-2 <?= !$existePeriodoActivo ? 'disabled' : '' ?>" id="btnAddGrupo">
                            <i class="fas fa-plus-circle"></i>
-                           <span>&nbsp;Agregar contenido</span>
+                           <span>&nbsp;Agregar sesión</span>
                         </button>
                      </div>
                   <?php } ?>
@@ -226,7 +240,7 @@
       let confirm = await showConfirmSweet('¿Está seguro de eliminar este contenido?', 'question');
       if (confirm) {
          $.ajax({
-            type: "GET",
+            type: "POST",
             url: "<?= MODULO_URL ?>/cursos/json/eliminar-grupo",
             data: {
                codigo: codigo,
@@ -249,7 +263,8 @@
          type: "POST",
          url: "<?= MODULO_URL ?>/cursos/auv-grupo-items",
          data: {
-            grupo: codigo
+            grupo: codigo,
+            salon: '<?= @$salon ?>'
          },
          beforeSend: function() {
             $('#items-grupo-P' + codigo).html(`<div class="d-flex justify-content-center"><div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div></div>`);
@@ -264,6 +279,9 @@
       let html = '';
       let periodo = '1';
       $.each(arrayAuvGrupos['P' + periodo], function(index, value) {
+         <?php if (!(@$esDocente || @$esAdmin)) { ?>
+            if (value.ocultar == 'S') return;
+         <?php } ?>
          html += `<div class="accordion-item my-3" id="accordion_item_P${value.codigo}"> <h2 class="accordion-header" id="accordion_head_P${value.codigo}"> <button class="accordion-button py-3 collapsed" codigo="${value.codigo}" cargo-contenido="N" type="button" data-bs-toggle="collapse" data-bs-target="#accordion_body_P${value.codigo}" aria-expanded="false" aria-controls="accordion_body_P${value.codigo}"> <div class="d-flex align-items-center w-100"> <i class="far fa-folder-open"></i> <div class="text-truncate pe-3">&nbsp; ${value.titulo}</div>
          <?php if (@$esDocente || @$esAdmin) { ?>
          <div class="ms-auto d-flex flex-row me-2" style="width: 50px;"> 
@@ -271,7 +289,7 @@
          <span>&nbsp;&nbsp;</span> <span class="btn-eliminar" item="${value.codigo}" title="Eliminar" aria-hidden="true"><i class="far fa-trash-alt"></i>
          </div>
          <?php } ?>
-         </div></button> </h2> <div id="accordion_body_P${value.codigo}" class="accordion-collapse collapse" aria-labelledby="accordion_head_P${value.codigo}" data-bs-parent="#box_accordion_${value.periodo}"> <div class="accordion-body"> <div class="text-start mb-3">
+         </div></button> </h2> <div id="accordion_body_P${value.codigo}" class="accordion-collapse collapse" aria-labelledby="accordion_head_P${value.codigo}" data-bs-parent="#box_accordion_${value.periodo}"> <div class="accordion-body"> <div class="text-center mb-3">
          <?php if (@$esDocente || @$esAdmin) { ?>
          <button class="btn btn-warning text-white btn-add-item" grupo="${value.codigo}">
          <i class="fas fa-tasks"></i> <span>&nbsp;Agregar Contenido</span>

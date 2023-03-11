@@ -43,7 +43,7 @@
                         <option value="">-Todos-</option>
                      </select>
                   </div>
-                  <div class="ms-auto" style="min-width: 15%;">
+                  <div class="ms-auto" style="min-width: 12%;">
                      <a href="<?= MODULO_URL ?>/matricula/registro" class="btn btn-primary w-100">
                         <i class="fas fa-user-graduate"></i>
                         <span>&nbsp;Matricular alumno</span>
@@ -52,7 +52,7 @@
                </div>
                <div id="jqxgridMatricula"></div>
                <div class="pt-3">
-                  <p class="mb-0">Total de matriculados : 0</p>
+                  <p class="mb-0" id="totalReg">Total de matriculados : 0</p>
                </div>
             </div>
          </div>
@@ -194,12 +194,34 @@
       });
    }
 
+   async function eliminarMatricula(index) {
+      let confirm = await showConfirmSweet('¿Está seguro de eliminar la matrícula de este alumno?', 'question');
+      if (!confirm) return;
+      let rowdata = $(jqxgridMatricula).jqxGrid('getrowdata', index);
+      $.ajax({
+         type: "POST",
+         url: "<?= MODULO_URL ?>/matricula/json/eliminar",
+         data: {
+            codalu: rowdata.codalu,
+            codmat: rowdata.codmat
+         },
+         success: function(response) {
+            $('#cmbAnioF').change();
+         }
+      });
+   }
+
    function generarFichaMatricula(index) {
       let data = $(jqxgridMatricula).jqxGrid('getrowdata', index);
       $('#rep_anio').val($('#cmbAnioF').val());
       $('#rep_codalu').val(data.codalu);
       $('#rep_codmat').val(data.codmat);
       $('#frmRepFicha').submit();
+   }
+
+   function totalRegistros() {
+      const info = $(jqxgridMatricula).jqxGrid('getdatainformation');
+      $('#totalReg').html(`Total de matriculados : &nbsp; ` + info.rowscount);
    }
 
    $(document).ready(function() {
@@ -217,7 +239,7 @@
                datafield: "codmat",
                align: 'center',
                cellsalign: 'center',
-               width: "110",
+               width: "120",
                pinned: true
             },
             {
@@ -226,15 +248,6 @@
                align: 'center',
                width: "320",
                pinned: true
-            },
-            {
-               text: "Fecha Matrícula",
-               datafield: "fecmat",
-               align: 'center',
-               cellsalign: 'center',
-               width: "150",
-               filterable: false,
-               cellsformat: 'dd/MM/yyyy'
             },
             {
                text: "N",
@@ -268,11 +281,20 @@
                filterable: false,
             },
             {
+               text: "Fecha Matrícula",
+               datafield: "fecmat",
+               align: 'center',
+               cellsalign: 'center',
+               width: "150",
+               filterable: false,
+               cellsformat: 'dd/MM/yyyy'
+            },
+            {
                text: "Condición",
                datafield: "condes",
                align: 'center',
                cellsalign: 'center',
-               width: "160",
+               width: "150",
                filterable: false,
             },
             {
@@ -287,7 +309,7 @@
                datafield: "fecreg",
                align: 'center',
                cellsalign: 'center',
-               width: "200",
+               width: "180",
                filterable: false,
                cellsformat: 'dd/MM/yyyy hh:mm tt'
             },
@@ -304,15 +326,7 @@
                width: '4%',
                filterable: false,
                cellsrenderer: function(row, column, value) {
-                  return `<div class="jqx-center-align"><button class="btn btn-link text-info" title="Editar"><i class="fas fa-pencil-alt"></i></button></div>`;
-               }
-            },
-            {
-               text: '',
-               width: '4%',
-               filterable: false,
-               cellsrenderer: function(row, column, value) {
-                  return `<div class="jqx-center-align"><button class="btn btn-link text-danger" title="Eliminar"><i class="far fa-trash-alt"></i></button></div>`;
+                  return `<div class="jqx-center-align"><button class="btn btn-link text-danger" onclick="eliminarMatricula(${row})" title="Eliminar"><i class="far fa-trash-alt"></i></button></div>`;
                }
             },
          ]
@@ -353,10 +367,13 @@
                if (response.listaRegistroMatricula) {
                   jqxgridMatriculaSource.localdata = response.listaRegistroMatricula;
                   $(jqxgridMatricula).jqxGrid('updateBoundData', 'data');
+                  totalRegistros();
                }
             }
          });
       });
+
+      totalRegistros();
 
    });
 </script>

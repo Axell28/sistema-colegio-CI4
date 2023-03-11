@@ -442,6 +442,167 @@
 
    const jqxgridAlumnosSource = {
       datatype: 'json',
+      dataFields: [{
+            name: 'codalu',
+            type: 'string'
+         },
+         {
+            name: 'codfam',
+            type: 'string'
+         },
+         {
+            name: 'anioing',
+            type: 'string'
+         },
+         {
+            name: 'fecsal',
+            type: 'string'
+         },
+         {
+            name: 'nivel',
+            type: 'string'
+         },
+         {
+            name: 'grado',
+            type: 'string'
+         },
+         {
+            name: 'seccion',
+            type: 'string'
+         },
+         {
+            name: 'matricula',
+            type: 'string'
+         },
+         {
+            name: 'estado',
+            type: 'string'
+         },
+         {
+            name: 'fecing',
+            type: 'string'
+         },
+         {
+            name: 'motsal',
+            type: 'string'
+         },
+         {
+            name: 'fotourl',
+            type: 'string'
+         },
+         {
+            name: 'nivel_des',
+            type: 'string'
+         },
+         {
+            name: 'grado_des',
+            type: 'string'
+         },
+         {
+            name: 'codper',
+            type: 'string'
+         },
+         {
+            name: 'nombres',
+            type: 'string'
+         },
+         {
+            name: 'apepat',
+            type: 'string'
+         },
+         {
+            name: 'apemat',
+            type: 'string'
+         },
+         {
+            name: 'fecnac',
+            type: 'string'
+         },
+         {
+            name: 'sexo',
+            type: 'string'
+         },
+         {
+            name: 'tipdoc',
+            type: 'string'
+         },
+         {
+            name: 'numdoc',
+            type: 'string'
+         },
+         {
+            name: 'estcivil',
+            type: 'string'
+         },
+         {
+            name: 'ruc',
+            type: 'string'
+         },
+         {
+            name: 'celular1',
+            type: 'string'
+         },
+         {
+            name: 'celular2',
+            type: 'string'
+         },
+         {
+            name: 'email',
+            type: 'string'
+         },
+         {
+            name: 'direccion',
+            type: 'string'
+         },
+         {
+            name: 'referencia',
+            type: 'string'
+         },
+         {
+            name: 'ubgdir',
+            type: 'string'
+         },
+         {
+            name: 'lugnac',
+            type: 'string'
+         },
+         {
+            name: 'nacionalidad',
+            type: 'string'
+         },
+         {
+            name: 'profesion',
+            type: 'string'
+         },
+         {
+            name: 'religion',
+            type: 'string'
+         },
+         {
+            name: 'infoaca',
+            type: 'string'
+         },
+         {
+            name: 'dept',
+            type: 'string'
+         },
+         {
+            name: 'prov',
+            type: 'string'
+         },
+         {
+            name: 'estado_des',
+            type: 'string'
+         },
+         {
+            name: 'nomcomp',
+            type: 'string'
+         },
+         {
+            name: 'tiene_usuario',
+            type: 'string'
+         }
+      ],
       localdata: `<?= json_encode(esc($listaAlumnos)) ?>`
    };
 
@@ -471,7 +632,7 @@
 
    function totalRegistros() {
       const info = $(jqxgridAlumnos).jqxGrid('getdatainformation');
-      $('#totalReg').html(`Total de Alumnos : &nbsp; ` + (info.rowscount > 10 ? info.rowscount : ('0' + info.rowscount)));
+      $('#totalReg').html(`Total de Alumnos : &nbsp; ` + info.rowscount);
    }
 
    function limpiarFormulario() {
